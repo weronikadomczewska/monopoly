@@ -1,6 +1,6 @@
 
 ''' klasa reprezentująca pojedyncze pole na planszy w grze '''
-class Player:
+class Field:
 
     ''' 
     konstruktor pola
@@ -30,7 +30,7 @@ class Player:
 
     '''
     def getPurchaseCost(self):
-        raise NotImplementedError("TODO: zaimplementować Field.getPurchaseCost()")
+        raise NotImplementedError("TODO: zaimplementować Field:getPurchaseCost()")
 
     '''
     zwraca kwotę, którą musi zapłacić gracz (nie posiadacz), który na polu stanie
@@ -40,7 +40,7 @@ class Player:
 
     '''
     def getFeeValue(self):
-        raise NotImplementedError("TODO: zaimplementować Field.getFeeValue()")
+        raise NotImplementedError("TODO: zaimplementować Field:getFeeValue()")
 
     '''
     zwraca kwotę, jaką należy zapłacić, aby ulepszyć pole
@@ -50,7 +50,7 @@ class Player:
 
     '''
     def getUpgradeCost(self):
-        raise NotImplementedError("TODO: zaimplementować Field.getUpgradeCost()")
+        raise NotImplementedError("TODO: zaimplementować Field:getUpgradeCost()")
 
     '''
     zwraca kwotę, jaką należy zapłacić, aby odkupić pole
@@ -60,7 +60,7 @@ class Player:
 
     '''
     def getRepurchaseCost(self):
-        raise NotImplementedError("TODO: zaimplementować Field.getRepurchaseCost()")
+        raise NotImplementedError("TODO: zaimplementować Field:getRepurchaseCost()")
 
 # przykłady stworzenia nowego gracza
 #
