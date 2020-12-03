@@ -74,3 +74,7 @@ class Game:
                 if random() < 0.05:
                     self.fields[p.position].owner = p
                     p.ownedFields.append(self.fields[p.position])
+
+            elif self.fields[p.position].owner == p and self.fields[p.position].upgradeLevel < 3:
+                if random() < 0.20:
+                    self.fields[p.position].upgradeLevel += 1
