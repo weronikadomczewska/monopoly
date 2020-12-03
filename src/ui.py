@@ -96,6 +96,31 @@ class UI:
                 if self.game.fields[offset].owner != None:
                     pygame.draw.circle(self.surface, self.game.fields[offset].owner.color, (x + (fieldWidth / 6), y + (4 * fieldHeight / 5) - fieldWidth / 7), fieldWidth / 8)
                     pygame.draw.circle(self.surface, (0, 0, 0), (x + (fieldWidth / 6), y + (4 * fieldHeight / 5) - fieldWidth / 7), fieldWidth / 8, borderWidth)
+                
+                # ulepszenia
+                upgradeLevel = self.game.fields[offset].upgradeLevel
+                if upgradeLevel > 0:
+                    if upgradeLevel == 1:
+                        width = fieldWidth / 3
+                        height = width * 1.2
+                        rect = pygame.Rect(x + (fieldWidth / 4), y + (fieldHeight / 4), width, height)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                    elif upgradeLevel == 2:
+                        width = fieldWidth / 3
+                        height = width * 1.2
+                        rect = pygame.Rect(x + (fieldWidth / 4), y + (fieldHeight / 4), width, height)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                        rect = pygame.Rect(x + (fieldWidth / 4) + fieldWidth / 12, y + (fieldHeight / 4) + fieldWidth / 12, width, height)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                    else:
+                        width = fieldWidth / 2
+                        height = width
+                        rect = pygame.Rect(x + (fieldWidth / 4), y + (fieldHeight / 4), width, height)
+                        pygame.draw.rect(self.surface, (198, 245, 236), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
 
                 # gracze
                 px = x + (fieldWidth / 12) 
@@ -153,7 +178,33 @@ class UI:
                 if self.game.fields[offset].owner != None:
                     pygame.draw.circle(self.surface, self.game.fields[offset].owner.color, (x + (fieldHeight / 5) + (fieldHeight / 10), y + fieldWidth / 6), fieldWidth / 8)
                     pygame.draw.circle(self.surface, (0, 0, 0), (x + (fieldHeight / 5) + (fieldHeight / 10), y + fieldWidth / 6), fieldWidth / 8, borderWidth)
-                    
+
+                # ulepszenia
+                upgradeLevel = self.game.fields[offset].upgradeLevel
+                if upgradeLevel > 0:
+                    if upgradeLevel == 1:
+                        width = fieldWidth / 3
+                        height = width * 1.2
+                        rect = pygame.Rect(x + (fieldHeight / 4) + (fieldHeight / 6), y + (fieldWidth / 4), height, width)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                        pass
+                    elif upgradeLevel == 2:
+                        width = fieldWidth / 3
+                        height = width * 1.2
+                        rect = pygame.Rect(x + (fieldHeight / 4) + (fieldHeight / 6), y + (fieldWidth / 4), height, width)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                        rect = pygame.Rect(x + (fieldHeight / 4) + (fieldHeight / 6) + (fieldWidth / 12), y + (fieldWidth / 4) + (fieldWidth / 12), height, width)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                    else:
+                        width = fieldWidth / 2
+                        height = width
+                        rect = pygame.Rect(x + (fieldHeight / 4) + (fieldHeight / 6), y + (fieldWidth / 4), height, width)
+                        pygame.draw.rect(self.surface, (198, 245, 236), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+
                 # gracze
                 px = x + fieldHeight - (fieldHeight / 6)
                 py = y + (fieldWidth / 12) 
@@ -210,6 +261,31 @@ class UI:
                     pygame.draw.circle(self.surface, self.game.fields[offset].owner.color, (x + (4 * fieldWidth / 5) + (fieldWidth / 20), y + (fieldHeight / 5) + (fieldHeight / 10)), fieldWidth / 8)
                     pygame.draw.circle(self.surface, (0, 0, 0), (x + (4 * fieldWidth / 5) + (fieldWidth / 20), y + (fieldHeight / 5) + (fieldHeight / 10)), fieldWidth / 8, 2)
                 
+                # ulepszenia
+                upgradeLevel = self.game.fields[offset].upgradeLevel
+                if upgradeLevel > 0:
+                    if upgradeLevel == 1:
+                        width = fieldWidth / 3
+                        height = width * 1.2
+                        rect = pygame.Rect(x + (fieldWidth / 4), y + (fieldHeight / 4) + (fieldHeight / 6), width, height)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                    elif upgradeLevel == 2:
+                        width = fieldWidth / 3
+                        height = width * 1.2
+                        rect = pygame.Rect(x + (fieldWidth / 4), y + (fieldHeight / 4) + (fieldHeight / 6), width, height)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                        rect = pygame.Rect(x + (fieldWidth / 4) + fieldWidth / 12, y + (fieldHeight / 4) + (fieldHeight / 6) + fieldWidth / 12, width, height)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                    else:
+                        width = fieldWidth / 2
+                        height = width
+                        rect = pygame.Rect(x + (fieldWidth / 4), y + (fieldHeight / 4) + (fieldHeight / 6), width, height)
+                        pygame.draw.rect(self.surface, (198, 245, 236), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+
                 # gracze
                 px = x + (fieldWidth / 12)
                 py = y + fieldHeight - (fieldWidth / 4) 
@@ -264,6 +340,32 @@ class UI:
                 if self.game.fields[offset].owner != None:
                     pygame.draw.circle(self.surface, self.game.fields[offset].owner.color, (x + (4 * fieldHeight / 5) - (fieldHeight / 10), y + fieldWidth - (fieldWidth / 6)), fieldWidth / 8)
                     pygame.draw.circle(self.surface, (0, 0, 0), (x + (4 * fieldHeight / 5) - (fieldHeight / 10), y + fieldWidth - (fieldWidth / 6)), fieldWidth / 8, 2)
+
+                # ulepszenia
+                upgradeLevel = self.game.fields[offset].upgradeLevel
+                if upgradeLevel > 0:
+                    if upgradeLevel == 1:
+                        width = fieldWidth / 3
+                        height = width * 1.2
+                        rect = pygame.Rect(x + (fieldHeight / 4), y + (fieldWidth / 4), height, width)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                        pass
+                    elif upgradeLevel == 2:
+                        width = fieldWidth / 3
+                        height = width * 1.2
+                        rect = pygame.Rect(x + (fieldHeight / 4), y + (fieldWidth / 4), height, width)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                        rect = pygame.Rect(x + (fieldHeight / 4) + (fieldWidth / 12), y + (fieldWidth / 4) + (fieldWidth / 12), height, width)
+                        pygame.draw.rect(self.surface, (245, 240, 198), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+                    else:
+                        width = fieldWidth / 2
+                        height = width
+                        rect = pygame.Rect(x + (fieldHeight / 4), y + (fieldWidth / 4), height, width)
+                        pygame.draw.rect(self.surface, (198, 245, 236), rect)
+                        pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
 
                 # gracze
                 px = x + (fieldWidth / 12)
