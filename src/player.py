@@ -1,4 +1,4 @@
-
+import random
 
 ''' klasa reprezentująca pojedynczego gracza w grze '''
 class Player:

@@ -11,16 +11,19 @@ class Field:
         financial (tuple(int, int, int, int, int)): ... TODO: uzupełnić informacje co znaczy co 
         isSpecial (bool): czy tworzone pole, jest polem specjalnym
         specialFunction (func(Player)): funkcja, która przyjmuje przez argument gracza i wykonuje specjalną akcję pola, None jeśli pole nie jest specjalne
+        hoverFunction (func(Player)): funkcja, która jest wykonywana na graczu, który tylko przejdzie przez pole, None jeśli takiej funkcji nie ma
 
     '''
-    def __init__(self, name="DEFAULT", color=(0, 0, 0), financial=(0, 0, 0, 0, 0), isSpecial=False, specialFunction=None):
+    def __init__(self, name="DEFAULT", color=(0, 0, 0), financial=(0, 0, 0, 0, 0), isSpecial=False, specialFunction=None, hoverFunction=None, imagePath="res/noimage.png"):
         self.name = name
         self.color = color
         self.financial = financial
         self.isSpecial = isSpecial
         self.specialFunction = specialFunction
+        self.hoverFunction = hoverFunction
         self.upgradeLevel = 0
         self.owner = None
+        self.imagePath = imagePath
 
     '''
     zwraca kwotę, którą musi zapłacić gracz, aby kupić wolne pole
