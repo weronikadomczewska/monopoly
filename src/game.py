@@ -40,14 +40,9 @@ class Game:
     funkcja inicjalizująca karty, dodaje je do list self.positiveCards i self.negativeCards
     '''
     def initializeCards(self):
-        self.positiveCards = [
+        self.cards = [
             ("+10", lambda _ : print("karta +10")),  # tymczasowe karty do testowania
             ("+100", lambda _ : print("karta +100")) # TODO(Bartosz P.): zamienić je na prawdziwe
-        ]
-
-        self.negativeCards = [
-            ("-10", lambda _ : print("karta -10")),  # tymczasowe karty do testowania
-            ("-100", lambda _ : print("karta -100")) # TODO(Bartosz P.): zamienić je na prawdziwe
         ]
 
     '''
