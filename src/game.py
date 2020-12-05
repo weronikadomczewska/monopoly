@@ -18,7 +18,46 @@ class Game:
     '''
     def initializeFields(self):
         self.fields = []
-        # TODO(Bartosz P.): dodać prawdziwe pola
+        # TODO(Szymon M.): uzupełnić finanse (financial=n1, n2, n3, n4, n5)
+
+        self.fields.append(Field(isSpecial=True, imagePath="res/start.png")) #Start
+        self.fields.append(Field(name="Współczesne stosunki międzynarodowe", color=(102, 51, 0), financial=(0, 0, 0, 0, 0))) # 1.1
+        self.fields.append(Field(name="Szansa", isSpecial=True, imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Historia Filozofii", color=(102, 51, 0), financial=(0, 0, 0, 0, 0))) # 1.2
+        self.fields.append(Field(isSpecial=True, imagePath="res/noimage.png")) # Grzyb duży
+        self.fields.append(Field(name="Wstęp do informatyki", color=(204, 229, 255), financial=(0, 0, 0, 0, 0))) # 2.1
+        self.fields.append(Field(name="Szansa", isSpecial=True, imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Wstęp do programowania w języku Python", color=(204, 229, 255), financial=(0, 0, 0, 0, 0))) # 2.2
+        self.fields.append(Field(name="Wstęp do programowania w języku C", color=(204, 229, 255), financial=(0, 0, 0, 0, 0))) # 2.3
+        self.fields.append(Field(isSpecial=True, imagePath="res/jail.png")) # Więzienie
+        self.fields.append(Field(name="Podstawy elektroniki, elektrotechniki i miernictwa", color=(153, 0, 153), financial=(0, 0, 0, 0, 0)))   # 3.1
+        self.fields.append(Field(name="Praktyka zawodowa w Nokii", isSpecial=True, imagePath="res/noimage.png")) # X.1 CENA ZALEŻNA OD LICZBY WYRZUCONYCH OCZEK
+        self.fields.append(Field(name="Komunikacja człowiek-komputer", color=(153, 0, 153), financial=(0, 0, 0, 0, 0))) # 3.2
+        self.fields.append(Field(name="Systemy wbudowane", color=(153, 0, 153), financial=(0, 0, 0, 0, 0))) # 3.3
+        self.fields.append(Field(name="Rozwój systemu zapisów", color=(255, 128, 0), financial=(0, 0, 0, 0, 0))) #4.1
+        self.fields.append(Field(name="Szansa", isSpecial=True, imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Kurs: Praktyczne aspekty sieci komputerowych", color=(255, 128, 0), financial=(0, 0, 0, 0, 0))) # 4.2
+        self.fields.append(Field(name="Kurs: WWW", color=(225, 128, 0), financial=(0, 0, 0, 0, 0))) # 4.3
+        self.fields.append(Field(isSpecial=True, imagePath="res/tram.png")) # Tramwaj
+        self.fields.append(Field(name="Podstawy grafiki komputerowej", color=(255, 0, 0), financial=(0, 0, 0, 0, 0))) # 5.1
+        self.fields.append(Field(name="Szansa", isSpecial=True, imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Kurs programowania gier w silniku Unity3D", color=(255, 0, 0), financial=(0, 0, 0, 0, 0))) # 5.2
+        self.fields.append(Field(name="Artificial Intelligence for Games", color=(255, 0, 0), financial=(0, 0, 0, 0, 0))) # 5.3
+        self.fields.append(Field(name="Kurs języka Java", color=(255, 255, 0), financial=(0, 0, 0, 0, 0))) # 6.1
+        self.fields.append(Field(name="Kurs języka Rust", color=(255, 255, 0), financial=(0, 0, 0, 0, 0))) # 6.2
+        self.fields.append(Field(name="Praktyka zawodowa w Comarch", isSpecial=True)) # X.2 CENA ZALEŻNA OD LICZBY WYRZUCONYCH OCZEK
+        self.fields.append(Field(name="Języki programowania", color=(255, 255, 0), financial=(0, 0, 0, 0, 0))) # 6.3
+        self.fields.append(Field(isSpecial=True, imagePath="res/gotojail.png")) # Idź do więzienia
+        self.fields.append(Field(name="Analiza numeryczna", color=(0, 153, 0), financial=(0, 0, 0, 0, 0))) # 7.1
+        self.fields.append(Field(name="Matematyka dyskretna", color=(0, 153, 0), financial=(0, 0, 0, 0, 0))) # 7.2
+        self.fields.append(Field(name="Szansa", isSpecial=True, imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Algebra", color=(0, 153, 0), financial=(0, 0, 0, 0, 0))) # 7.3
+        self.fields.append(Field(name="Szansa", isSpecial=True, imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Analiza matematyczna", color=(0, 0, 204), financial=(0, 0, 0, 0, 0))) # 8.1
+        self.fields.append(Field(isSpecial=True, imagePath="res/noimage.png")) # Grzyb mały
+        self.fields.append(Field(name="Logika dla informatyków", color=(0, 0, 204), financial=(0, 0, 0, 0, 0))) # 8.1
+
+        ''' Testowy algorytm Karola, wraz z dodaniem prawdziwych pól przestanie być on potrzebny
         for i in range(36):
             # color = (255, 56, 152)
             color = (randint(0, 255), randint(0, 255), randint(0, 255))
@@ -33,8 +72,7 @@ class Game:
                 self.fields.append(Field(color=color, isSpecial=True, imagePath="res/gotojail.png"))
             else:
                 self.fields.append(Field(color=color))
-
-
+        '''
 
     '''
     funkcja inicjalizująca karty, dodaje je do list self.positiveCards i self.negativeCards
