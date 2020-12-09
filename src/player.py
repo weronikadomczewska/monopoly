@@ -20,6 +20,22 @@ class Player:
         self.position = 0
         self.ownedFields = []
 
+        self.riskLevel = random.random()
+        self.aggressionLevel = random.random()
+        
+
+    def botDecidePurchase(self, field):
+        pass
+
+    def botDecideRepurchase(self, field):
+        pass
+
+    def botDecideUpgrade(self, field):
+        pass
+
+    def botDecideJail(self, field):
+        pass
+
 # przykłady stworzenia nowego gracza
 #
 # p1 = Player(isBot=True, color=(255, 0, 0), money=600) - tworzy gracza komputerowego o kolorze czerwonym, który posiada 600 pieniędzy
