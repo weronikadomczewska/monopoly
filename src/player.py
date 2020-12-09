@@ -22,18 +22,18 @@ class Player:
         self.riskLevel = random.random()
         self.aggressionLevel = random.random()
         
-
     def botDecidePurchase(self, field):
-        pass
+        return True if random.random() <= self.riskLevel else False
 
     def botDecideRepurchase(self, field):
-        pass
+        return True if random.random() <= self.aggressionLevel else False
 
     def botDecideUpgrade(self, field):
         pass
 
     def botDecideJail(self, field):
         pass
+
 
 # przykłady stworzenia nowego gracza
 #
