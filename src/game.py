@@ -3,7 +3,12 @@ from field import Field
 from random import randint, random
 
 ''' klasa reprezentująca rozgrywkę '''
+
 class Game:
+    
+    WAITINGFORDICE = 1
+    WAITINGFORDECISION = 2
+    
     ''' 
     konstruktor gry
 
@@ -12,6 +17,8 @@ class Game:
         self.initializeFields()
         self.initializeCards()
         self.players = []
+        self.state = self.WAITINGFORDICE
+        self.activePlayer = 0
     
     '''
     funkcja inicjalizująca planszę, tworzy wszystkie pola i dodaje je do listy self.fields
@@ -127,17 +134,28 @@ class Game:
             raise Exception("Game:addPlayer: coś jest nie tak, próbowano dodać za dużo graczy!")
     
     # funkcja do testowania interfejsu
-    def takeAction(self):
-        for p in self.players:
-            p.position += randint(1, 12)
-            if p.position > 35:
-                p.position %= 36
+    # def takeAction(self):
+    #     for p in self.players:
+    #         p.position += randint(1, 12)
+    #         if p.position > 35:
+    #             p.position %= 36
 
-            if self.fields[p.position].owner == None and not self.fields[p.position].isSpecial:
-                if random() < 0.05:
-                    self.fields[p.position].owner = p
-                    p.ownedFields.append(self.fields[p.position])
+    #         if self.fields[p.position].owner == None and not self.fields[p.position].isSpecial:
+    #             if random() < 0.05:
+    #                 self.fields[p.position].owner = p
+    #                 p.ownedFields.append(self.fields[p.position])
 
-            elif self.fields[p.position].owner == p and self.fields[p.position].upgradeLevel < 3:
-                if random() < 0.20:
-                    self.fields[p.position].upgradeLevel += 1
+    #         elif self.fields[p.position].owner == p and self.fields[p.position].upgradeLevel < 3:
+    #             if random() < 0.20:
+    #                 self.fields[p.position].upgradeLevel += 1
+
+    # kliknięcie dla rzutu kością
+    def inputDice(self):
+        # rzut kością, przesunięcie gracza, odpalenie funkcji pola na które stanął
+        self.state = self.WAITINGFORDECISION # lub jeśli nie ma możliwości podjęcia żadnej akcji, to self.activePlayer += 1, self.state = self.WAITINGFORDICE
+        pass
+
+    # kliknięcie do podjęcia decyzji (np. kupna pola)
+    def inputDecision(self, decision):
+        # kupowanie upgradów, podkupowanie pól graczom, wyjście z więzienia, akceptacja karty szansy itp. itd
+        pass

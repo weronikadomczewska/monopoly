@@ -21,11 +21,6 @@ class UI:
         
     def gameTick(self):
 
-        if time.time() - self.timer >= 0.5:
-            self.game.takeAction()
-            self.timer = time.time()
-            self.needRedraw = True
-
         # przetworzenie zdarzeń okna gry
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -34,6 +29,9 @@ class UI:
             if event.type == pygame.VIDEORESIZE:
                 self.needRedraw = True
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.clicked = True
+
         # leniwe rysowanie interfejsu - tylko wtedy gdy jest potrzeba
         if self.needRedraw:
             self.surface.fill((255, 255, 255)) # czyszczenie ekranu
@@ -41,8 +39,21 @@ class UI:
             self.needRedraw = False
             pygame.display.update() # pokazanie narysowanego interfejsu
 
+        # obsługa stanów gry
+        if self.game.state == self.game.WAITINGFORDICE:
+            if self.clicked == True:
+                self.game.inputDice()
+
+        if self.game.state == self.game.WAITINGFORDECISION:
+            if self.clicked == True:
+                self.game.inputDecision(0)
+        
+        # czyszczenie
+        self.clicked = False
+
     # tymczasowa (bardzo brzydka) implementacja rysowania planszy
     # TODO(Karol M.): napisać ten kod porządnie!
+    # TODO(Karol M.): 
     def drawBoard(self):
         w = self.surface.get_width() # szerokość okna
         h = self.surface.get_height() # wysokość okna
