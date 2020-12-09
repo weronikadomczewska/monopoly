@@ -60,9 +60,9 @@ class Game:
         self.fields.append(Field(name="Szansa", isSpecial=True, imagePath="res/noimage.png")) # Szansa
         self.fields.append(Field(name="Algebra", color=(0, 153, 0), financial=(64, 30, 90, 200, 280, 40))) # 7.3
         self.fields.append(Field(name="Szansa", isSpecial=True, imagePath="res/noimage.png")) # Szansa
-        self.fields.append(Field(name="Analiza matematyczna", color=(0, 0, 204), financial=(70, 35, 100, 220, 300, 40))) # 8.1
+        self.fields.append(Field(name="Analiza matematyczna", color=(3, 177, 252), financial=(70, 35, 100, 220, 300, 40))) # 8.1
         self.fields.append(Field(isSpecial=True, imagePath="res/noimage.png")) # Grzyb mały
-        self.fields.append(Field(name="Logika dla informatyków", color=(0, 0, 204), financial=(80, 40, 120, 280, 400, 40))) # 8.1
+        self.fields.append(Field(name="Logika dla informatyków", color=(3, 177, 252), financial=(80, 40, 120, 280, 400, 40))) # 8.1
 
         ''' Testowy algorytm Karola, wraz z dodaniem prawdziwych pól przestanie być on potrzebny
         for i in range(36):

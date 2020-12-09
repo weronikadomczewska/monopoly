@@ -16,18 +16,18 @@ class Player:
         self.isBot = isBot
         self.color = color
         self.money = money
+        self.diceroll = 0
         self.position = 0
         self.ownedFields = []
 
         self.riskLevel = random.random()
         self.aggressionLevel = random.random()
         
-
     def botDecidePurchase(self, field):
-        pass
+        return True if random.random() <= self.riskLevel else False
 
     def botDecideRepurchase(self, field):
-        pass
+        return True if random.random() <= self.aggressionLevel else False
 
     def botDecideUpgrade(self, field):
         risk = self.riskLevel
@@ -87,6 +87,7 @@ class Player:
 
         else:
             return False 
+
 
 
 # przykłady stworzenia nowego gracza
