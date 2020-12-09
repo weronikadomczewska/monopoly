@@ -16,6 +16,7 @@ class Player:
         self.isBot = isBot
         self.color = color
         self.money = money
+        self.diceroll = 0
         self.position = 0
         self.ownedFields = []
 

@@ -46,7 +46,7 @@ class UI:
                 print("click!")
                 self.game.inputDice()
 
-        if self.game.state == self.game.WAITINGFORDECISION:
+        elif self.game.state == self.game.WAITINGFORDECISION:
             if self.clicked == True:
                 print("click!")
 
@@ -55,10 +55,13 @@ class UI:
         # czyszczenie
         self.clicked = False
 
+    def renderText(self, text):
+        return self.font.render(text, True, (0, 0, 0))
+
     # tymczasowa (bardzo brzydka) implementacja rysowania planszy
     # TODO(Karol M.): napisać ten kod porządnie!
-    # TODO(Karol M.): 
     def drawBoard(self):
+
         w = self.surface.get_width() # szerokość okna
         h = self.surface.get_height() # wysokość okna
         boardSize = min(w, h) - (min(w, h) / 10) # długość boku planszy
@@ -105,7 +108,7 @@ class UI:
         for _ in range(8):
             rect = pygame.Rect(x, y, fieldWidth, fieldHeight)
             pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
-        
+
             if not self.game.fields[offset].isSpecial:
 
                 if self.game.fields[offset].owner != None:
@@ -147,9 +150,21 @@ class UI:
                         pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
                         px += fieldWidth / 8 + fieldWidth / 12
 
+                # kolorowy pasek
                 rect = pygame.Rect(x, y + (4 * fieldHeight / 5), fieldWidth, fieldHeight / 5)
                 pygame.draw.rect(self.surface, self.game.fields[offset].color, rect)
                 pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+
+                # cena pola
+                priceTag = None
+                if self.game.fields[offset].owner == None:
+                    priceTag = self.game.fields[offset].getPurchaseCost()
+                else:
+                    priceTag = self.game.fields[offset].getFeeValue()
+                priceTag = self.renderText(str(priceTag))
+                scaleFactor = (fieldHeight / 5) / priceTag.get_height()
+                priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
+                self.surface.blit(priceTag, (x + (fieldWidth / 2) - (priceTag.get_width() / 2), y + (4 * fieldHeight / 5)))
 
             x -= fieldWidth
             offset += 1
@@ -230,9 +245,22 @@ class UI:
                         pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
                         py += fieldWidth / 8 + fieldWidth / 12
 
+                # kolorowy pasek
                 rect = pygame.Rect(x, y, fieldHeight / 5, fieldWidth)
                 pygame.draw.rect(self.surface, self.game.fields[offset].color, rect)
                 pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+
+                # cena pola
+                priceTag = None
+                if self.game.fields[offset].owner == None:
+                    priceTag = self.game.fields[offset].getPurchaseCost()
+                else:
+                    priceTag = self.game.fields[offset].getFeeValue()
+                priceTag = self.renderText(str(priceTag))
+                scaleFactor = (fieldHeight / 5) / priceTag.get_height()
+                priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
+                priceTag = pygame.transform.rotate(priceTag, 270)
+                self.surface.blit(priceTag, (x, y + (fieldWidth / 2) - (priceTag.get_width() / 2)))
 
             y -= fieldWidth
             offset += 1
@@ -311,9 +339,21 @@ class UI:
                         pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
                         px += fieldWidth / 8 + fieldWidth / 12
 
+                # kolorwy pasek
                 rect = pygame.Rect(x, y, fieldWidth, fieldHeight / 5)
                 pygame.draw.rect(self.surface, self.game.fields[offset].color, rect)
                 pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+
+                # cena pola
+                priceTag = None
+                if self.game.fields[offset].owner == None:
+                    priceTag = self.game.fields[offset].getPurchaseCost()
+                else:
+                    priceTag = self.game.fields[offset].getFeeValue()
+                priceTag = self.renderText(str(priceTag))
+                scaleFactor = (fieldHeight / 5) / priceTag.get_height()
+                priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
+                self.surface.blit(priceTag, (x + (fieldWidth / 2) - (priceTag.get_width() / 2), y))
 
             x += fieldWidth
             offset += 1
@@ -392,9 +432,22 @@ class UI:
                         pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
                         py += fieldWidth / 8 + fieldWidth / 12
 
+                # kolorowy pasek
                 rect = pygame.Rect(x + (4 * fieldHeight / 5), y, fieldHeight / 5, fieldWidth)
                 pygame.draw.rect(self.surface, self.game.fields[offset].color, rect)
                 pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+
+                # cena pola
+                priceTag = None
+                if self.game.fields[offset].owner == None:
+                    priceTag = self.game.fields[offset].getPurchaseCost()
+                else:
+                    priceTag = self.game.fields[offset].getFeeValue()
+                priceTag = self.renderText(str(priceTag))
+                scaleFactor = (fieldHeight / 5) / priceTag.get_height()
+                priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
+                priceTag = pygame.transform.rotate(priceTag, 90)
+                self.surface.blit(priceTag, (x + (4 * fieldHeight / 5), y + (fieldWidth / 2) - (priceTag.get_width() / 2)))
 
             y += fieldWidth
             offset += 1
