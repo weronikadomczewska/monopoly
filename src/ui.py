@@ -8,6 +8,7 @@ class UI:
         self.game = game
         self.closed = False
         self.needRedraw = True
+        self.clicked = False
 
         pygame.display.init()
         info = pygame.display.Info()
@@ -42,10 +43,13 @@ class UI:
         # obsługa stanów gry
         if self.game.state == self.game.WAITINGFORDICE:
             if self.clicked == True:
+                print("click!")
                 self.game.inputDice()
 
         if self.game.state == self.game.WAITINGFORDECISION:
             if self.clicked == True:
+                print("click!")
+
                 self.game.inputDecision(0)
         
         # czyszczenie
