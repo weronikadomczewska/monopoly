@@ -14,7 +14,7 @@ class Field:
         hoverFunction (func(Player)): funkcja, która jest wykonywana na graczu, który tylko przejdzie przez pole, None jeśli takiej funkcji nie ma
 
     '''
-    def __init__(self, name="DEFAULT", color=(0, 0, 0), financial=(0, 0, 0, 0, 0), isSpecial=False, specialFunction=None, hoverFunction=None, imagePath="res/noimage.png"):
+    def __init__(self, name="DEFAULT", color=(0, 0, 0), financial=(0, 0, 0, 0, 0, 0), isSpecial=False, specialFunction=None, hoverFunction=None, imagePath="res/noimage.png"):
         self.name = name
         self.color = color
         self.financial = financial
@@ -33,7 +33,8 @@ class Field:
 
     '''
     def getPurchaseCost(self):
-        raise NotImplementedError("TODO: zaimplementować Field:getPurchaseCost()")
+        return self.financial[0]
+        """raise NotImplementedError("TODO: zaimplementować Field:getPurchaseCost()")"""
 
     '''
     zwraca kwotę, którą musi zapłacić gracz (nie posiadacz), który na polu stanie
@@ -43,7 +44,8 @@ class Field:
 
     '''
     def getFeeValue(self):
-        raise NotImplementedError("TODO: zaimplementować Field:getFeeValue()")
+        return self.financial[1+self.upgradeLevel]
+        """raise NotImplementedError("TODO: zaimplementować Field:getFeeValue()")"""
 
     '''
     zwraca kwotę, jaką należy zapłacić, aby ulepszyć pole
@@ -53,7 +55,8 @@ class Field:
 
     '''
     def getUpgradeCost(self):
-        raise NotImplementedError("TODO: zaimplementować Field:getUpgradeCost()")
+        return self.financial[5]
+        """raise NotImplementedError("TODO: zaimplementować Field:getUpgradeCost()")"""
 
     '''
     zwraca kwotę, jaką należy zapłacić, aby odkupić pole
@@ -63,7 +66,8 @@ class Field:
 
     '''
     def getRepurchaseCost(self):
-        raise NotImplementedError("TODO: zaimplementować Field:getRepurchaseCost()")
+        return (self.financial[0]+(self.financial[5]*self.upgradeLevel))*2
+        """ raise NotImplementedError("TODO: zaimplementować Field:getRepurchaseCost()")"""
 
 # przykłady stworzenia nowego gracza
 #
