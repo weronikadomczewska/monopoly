@@ -30,10 +30,64 @@ class Player:
         pass
 
     def botDecideUpgrade(self, field):
-        pass
+        risk = self.riskLevel
+        ownedMoney = self.money
+        costOfUpgrade = field.getUpgradeCost() # koszt ulepszenia pola
+        percentOfBudget = costOfUpgrade / ownedMoney #jaki procent budżetu będzie poświęcony na zakup pola
 
+        if percentOfBudget >= 0.75:
+            if risk >= 0.95:
+                return True
+            else:
+                return False
+
+        elif 0.5 <= percentOfBudget < 0.75:
+            if risk >= 0.5:
+                return True
+            else:
+                return False
+
+        elif 0.25 <= percentOfBudget < 0.5:
+            if risk >= 0.3:
+                return True
+            else:
+                return False
+        else:
+            return True
+
+    #True - wykupuje się
+    # False - rzuca dalej kośćmi        
     def botDecideJail(self, field):
-        pass
+        aggression = self.aggressionLevel
+        ownedMoney = self.money
+
+        if aggression >= 0.8:
+            return True
+
+        costOfBribe = 50 #koszt wykupienia się z więzienia
+        percentOfBudget = costOfBribe / ownedMoney #procent budżetu, jaki stanowi wykupienie się z więzenia
+
+        if 0 < percentOfBudget < 0.15:
+            return True 
+        elif 0.15 <= percentOfBudget < 0.3:
+            if aggression >= 0.4:
+                return True
+            else:
+                return False
+        elif 0.3 <= percentOfBudget < 0.5:
+            if aggression >= 0.6:
+                return True
+            else:
+                return False
+        elif 0.5 <= percentOfBudget < 0.7:
+            if 0.6 < aggression < 0.8:
+                return True
+            else:
+                return False
+
+        else:
+            return False 
+
 
 # przykłady stworzenia nowego gracza
 #
