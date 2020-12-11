@@ -27,45 +27,80 @@ class Game:
     '''
     funkcja inicjalizująca planszę, tworzy wszystkie pola i dodaje je do listy self.fields
     '''
+    #obsługa pola startowego
+    def startField(self, player):
+        player.money += 30
+
+    #akcja na polu duży grzyb
+    def bigMushshroom(self, player):
+        player.money -= 30
+
+    #TODO
+    #akcja na polu szansa
+    def chanceField(self, player):
+        pass
+
+    #akcja na polu więzienie
+    def prisonField(self, player):
+        player.jailed = 2
+    
+    #TODO
+    #akcja na polu specjalnym praktyka w Nokii (pole, którego nie można odkupić)
+    def practiseField(self, player):
+        pass
+
+    #akcja na polu tramwaj
+    def tramField(self, player, fieldNumber):
+        player.position = fieldNumber
+
+    #akcja na polu idź do więzienia
+    def goToPrison(self, player):
+        player.position = 9
+        player.jailed = 3
+
+    #akcja na polu mały grzyb
+    def littleMushroom(self, player):
+        player.money -= 15
+
     # self.players[self.activePlayer]
     def initializeFields(self):
         self.fields = []
 
-        self.fields.append(Field(isSpecial=True,specialFunction=(lambda p: p), imagePath="res/start.png")) #Start
+        self.fields.append(Field(isSpecial=True,specialFunction=self.startField, imagePath="res/start.png")) #Start
         self.fields.append(Field(name="Współczesne stosunki międzynarodowe", color=(102, 51, 0), financial=(12, 4, 6, 18, 50, 10))) # 1.1 -financial cena,opłata bazowa,opłata 1 poziom,opłata 2 poziom,opłata 3 poziom,cena upgradu
-        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=(lambda p:p) , imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=self.chanceField , imagePath="res/noimage.png")) # Szansa
         self.fields.append(Field(name="Historia Filozofii", color=(102, 51, 0), financial=(12, 4, 12, 36, 90, 10))) # 1.2
-        self.fields.append(Field(isSpecial=True,specialFunction=(lambda p:p) , imagePath="res/noimage.png")) # Grzyb duży
+        self.fields.append(Field(isSpecial=True,specialFunction=self.bigMushroom, imagePath="res/noimage.png")) # Grzyb duży
         self.fields.append(Field(name="Wstęp do informatyki", color=(204, 229, 255), financial=(20, 6, 18, 54, 110,10))) # 2.1
-        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=(lambda p:p), imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=self.chanceField, imagePath="res/noimage.png")) # Szansa
         self.fields.append(Field(name="Wstęp do programowania w języku Python", color=(204, 229, 255), financial=(20, 6, 18, 54, 110,10))) # 2.2
         self.fields.append(Field(name="Wstęp do programowania w języku C", color=(204, 229, 255), financial=(24, 8, 20, 60, 120,10))) # 2.3
-        self.fields.append(Field(isSpecial=True,specialFunction=(lambda p:p), imagePath="res/jail.png")) # Więzienie
+        self.fields.append(Field(isSpecial=True,specialFunction=self.prisonField, imagePath="res/jail.png")) # Więzienie
         self.fields.append(Field(name="Podstawy elektroniki, elektrotechniki i miernictwa", color=(153, 0, 153), financial=(28, 10, 30, 90, 150, 20)))   # 3.1
         self.fields.append(Field(name="Praktyka zawodowa w Nokii", isSpecial=True,specialFunction=(lambda p: p), imagePath="res/noimage.png")) # X.1 CENA ZALEŻNA OD LICZBY WYRZ6UCONYCH OCZEK
         self.fields.append(Field(name="Komunikacja człowiek-komputer", color=(153, 0, 153), financial=(28, 10, 30, 90, 150, 20))) # 3.2
         self.fields.append(Field(name="Systemy wbudowane", color=(153, 0, 153), financial=(32, 12, 36, 100, 180, 20))) # 3.3
         self.fields.append(Field(name="Rozwój systemu zapisów", color=(255, 128, 0), financial=(36, 14, 40, 110, 190, 20))) #4.1
-        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=(lambda p:p), imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=self.chanceField, imagePath="res/noimage.png")) # Szansa
         self.fields.append(Field(name="Kurs: Praktyczne aspekty sieci komputerowych", color=(255, 128, 0), financial=(36, 14, 40, 110, 190, 20))) # 4.2
         self.fields.append(Field(name="Kurs: WWW", color=(225, 128, 0), financial=(40, 16, 44, 120, 200, 20))) # 4.3
-        self.fields.append(Field(isSpecial=True,specialFunction=(lambda p: p), imagePath="res/tram.png")) # Tramwaj
+        self.fields.append(Field(isSpecial=True,specialFunction=self.tramField, imagePath="res/tram.png")) # Tramwaj
         self.fields.append(Field(name="Podstawy grafiki komputerowej", color=(255, 0, 0), financial=(44, 18, 50, 140, 210, 30))) # 5.1
-        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=(lambda p:p), imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=self.chanceField, imagePath="res/noimage.png")) # Szansa
         self.fields.append(Field(name="Kurs programowania gier w silniku Unity3D", color=(255, 0, 0), financial=(44, 18, 50, 140, 210, 30))) # 5.2
         self.fields.append(Field(name="Artificial Intelligence for Games", color=(255, 0, 0), financial=(48, 20, 60, 150, 220, 30))) # 5.3
         self.fields.append(Field(name="Kurs języka Java", color=(255, 255, 0), financial=(52, 22, 66, 160, 230, 30))) # 6.1
         self.fields.append(Field(name="Kurs języka Rust", color=(255, 255, 0), financial=(52, 22, 66, 160, 230, 30))) # 6.2
         self.fields.append(Field(name="Praktyka zawodowa w Comarch", isSpecial=True,specialFunction=(lambda p:p))) # X.2 CENA ZALEŻNA OD LICZBY WYRZUCONYCH OCZEK
         self.fields.append(Field(name="Języki programowania", color=(255, 255, 0), financial=(56, 24, 72, 170, 240, 30))) # 6.3
-        self.fields.append(Field(isSpecial=True,specialFunction=(lambda p:p), imagePath="res/gotojail.png")) # Idź do więzienia
+        self.fields.append(Field(isSpecial=True,specialFunction=self.goToPrison, imagePath="res/gotojail.png")) # Idź do więzienia
         self.fields.append(Field(name="Analiza numeryczna", color=(0, 153, 0), financial=(60, 26, 78, 190, 255, 40))) # 7.1
         self.fields.append(Field(name="Matematyka dyskretna", color=(0, 153, 0), financial=(60, 26, 78, 190, 255, 40))) # 7.2
-        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=(lambda p:p), imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=self.chanceField, imagePath="res/noimage.png")) # Szansa
         self.fields.append(Field(name="Algebra", color=(0, 153, 0), financial=(64, 30, 90, 200, 280, 40))) # 7.3
-        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=(lambda p:p), imagePath="res/noimage.png")) # Szansa
+        self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=self.chanceField, imagePath="res/noimage.png")) # Szansa
         self.fields.append(Field(name="Analiza matematyczna", color=(3, 177, 252), financial=(70, 35, 100, 220, 300, 40))) # 8.1
-        self.fields.append(Field(isSpecial=True,specialFunction=(lambda p:p), imagePath="res/noimage.png")) # Grzyb mały
+        self.fields.append(Field(isSpecial=True,specialFunction=self.littleMushroom, imagePath="res/noimage.png")) # Grzyb mały
         self.fields.append(Field(name="Logika dla informatyków", color=(3, 177, 252), financial=(80, 40, 120, 280, 400, 40))) # 8.1
 
         ''' Testowy algorytm Karola, wraz z dodaniem prawdziwych pól przestanie być on potrzebny
