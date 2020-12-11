@@ -32,7 +32,7 @@ class Game:
         player.money += 30
 
     #akcja na polu duży grzyb
-    def bigMushshroom(self, player):
+    def bigMushroom(self, player):
         player.money -= 30
 
     #TODO
