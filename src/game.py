@@ -159,6 +159,7 @@ class Game:
         if p.jailed > 0:
             p.jailed=-1
             self.activePlayer += 1
+            self.activePlayer %= len(self.players)
             self.state = self.WAITINGFORDICE
             return False
         dice1 = randint(1,6)
@@ -197,12 +198,13 @@ class Game:
             #nie zajęte pole
             elif self.fields[p.position].owner == None:
                 if p.money >= self.fields[p.position].getPurchaseCost():
-                    self.state = self.WAITINGFORDECISION
+                    self.state = self.WAITINGFORPURCHASE
                     p.diceroll = 0
                     return (dice1, dice2)
                     #wyświetlanie 'nie stać cię na zakup'
                 else:
                     self.activePlayer += 1
+                    self.activePlayer%= len(self.players)
                     self.state = self.WAITINGFORDICE
                     p.diceroll = 0
                     return (dice1, dice2)
@@ -219,34 +221,30 @@ class Game:
 
                 elif p.money < self.fields[p.position].getRepurchaseCost():
                     self.activePlayer += 1
+                    self.activePlayer %= len(self.players)
                     self.state = self.WAITINGFORDICE
                     p.diceroll = 0
                     return (dice1, dice2)
 
-
-
+            #Upgrade pola
             elif self.fields[p.position].owner == p:
-                self.state = self.WAITINGFORUPGRADE
-                p.diceroll = 0
-                return (dice1, dice2)
-
-
-                #odkupowanie pola od gracza
-            elif p.money < self.fields[p.position].getRepurchaseCost():
-                self.activePlayer+=1
-                self.state = self.WAITINGFORDICE
-                p.diceroll = 0
-                return (dice1, dice2)
+                    if p.money >= self.fields[p.position].getUpgradeCost():
+                        self.state = self.WAITINGFORDICE
+                        p.diceroll = 0
+                        return (dice1, dice2)
+                    else:
+                        self.activePlayer+=1
+                        self.state = self.WAITINGFORDICE
+                        p.diceroll = 0
+                        return (dice1, dice2)
 
             #                 self.fields[p.position].owner = p
             #                 p.ownedFields.append(self.fields[p.position])
 
 
 
+        raise Exception("Game:input dice: coś jest nie tak, Gdzie ty jesteś na plansz?",str(p.position))
 
-        self.state = self.WAITINGFORDECISION # lub jeśli nie ma możliwości podjęcia żadnej akcji, to self.activePlayer += 1, self.state = self.WAITINGFORDICE
-        p.diceroll = 0
-        return(dice1,dice2)
 
     # kliknięcie do podjęcia decyzji (np. kupna pola)
 
@@ -262,12 +260,14 @@ class Game:
             p.money -= self.fields[p.position].getPurchaseCost()
             self.fields[p.position].owner = p
             self.activePlayer += 1
+            self.activePlayer %= len(self.players)
             self.state = self.WAITINGFORDICE
         #upgrade
         elif decision == 'Upgrade':
             p.money -= self.fields[p.position].getUpgradeCost()
             self.fields[p.position].upgradeLevel +=1
             self.activePlayer += 1
+            self.activePlayer %= len(self.players)
             self.state = self.WAITINGFORDICE
 
         #odkup
@@ -276,17 +276,20 @@ class Game:
             self.fields[p.position].upgradeLevel = 0
             self.fields[p.position].owner = p
             self.activePlayer += 1
+            self.activePlayer %= len(self.players)
             self.state = self.WAITINGFORDICE
 
         #akceptacja
         elif decision == 'Yes':
             self.activePlayer += 1
+            self.activePlayer %= len(self.players)
             self.state = self.WAITINGFORDICE
 
         #wyjście z więzienia
         elif decision == 'Bribe':
             p.money-= 30 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!kwota?
             self.activePlayer += 1 # ruch po wyjściu z więzienia????????????
+            self.activePlayer %= len(self.players)
             self.state = self.WAITINGFORDICE
         #brake out
         elif decision == 'Break_out':
@@ -296,6 +299,7 @@ class Game:
             if dice1!=dice2:
                 p.money-= 30 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!kwota?
             self.activePlayer += 1 # ruch po wyjściu z więzienia????????????
+            self.activePlayer %= len(self.players)
             self.state = self.WAITINGFORDICE
             return (dice1,dice2)
 
