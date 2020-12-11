@@ -47,7 +47,6 @@ class UI:
                 self.clicked = True
 
         # obsługa stanów gry
-        print("gamestate", self.game.state)
         if self.game.state == self.game.WAITINGFORDICE:
             if self.clicked == True:
                 self.drawDice = self.game.inputDice()
