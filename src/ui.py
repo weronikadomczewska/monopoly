@@ -47,6 +47,7 @@ class UI:
                 self.clicked = True
 
         # obsługa stanów gry
+        print("gamestate", self.game.state)
         if self.game.state == self.game.WAITINGFORDICE:
             if self.clicked == True:
                 self.drawDice = self.game.inputDice()
@@ -60,6 +61,16 @@ class UI:
         elif self.game.state == self.game.WAITINGFORPURCHASE:
             if self.clicked == True:
                 self.game.inputDecision("Buy")
+                self.needRedraw = True
+
+        elif self.game.state == self.game.WAITINGFORREPURCHASE:
+            if self.clicked == True:
+                self.game.inputDecision("Repurchase")
+                self.needRedraw = True
+
+        elif self.game.state == self.game.WAITINGFORUPGRADE:
+            if self.clicked == True:
+                self.game.inputDecision("Upgrade")
                 self.needRedraw = True
 
         # leniwe rysowanie interfejsu - tylko wtedy gdy jest potrzeba
