@@ -37,6 +37,7 @@ class UI:
         if self.needRedraw:
             self.surface.fill((255, 255, 255)) # czyszczenie ekranu
             self.drawBoard()
+            self.drawPlayerInfo()
             self.needRedraw = False
             pygame.display.update() # pokazanie narysowanego interfejsu
 
@@ -45,12 +46,14 @@ class UI:
             if self.clicked == True:
                 print("click!")
                 self.game.inputDice()
+                self.needRedraw = True
 
         elif self.game.state == self.game.WAITINGFORDECISION:
             if self.clicked == True:
                 print("click!")
 
                 self.game.inputDecision(0)
+                self.needRedraw = True
         
         # czyszczenie
         self.clicked = False
@@ -140,16 +143,6 @@ class UI:
                         pygame.draw.rect(self.surface, (198, 245, 236), rect)
                         pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
 
-                # gracze
-                px = x + (fieldWidth / 12) 
-                py = y + (fieldWidth / 12) 
-                for p in self.game.players:
-                    if p.position == offset:
-                        rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                        pygame.draw.rect(self.surface, p.color, rect)
-                        pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
-                        px += fieldWidth / 8 + fieldWidth / 12
-
                 # kolorowy pasek
                 rect = pygame.Rect(x, y + (4 * fieldHeight / 5), fieldWidth, fieldHeight / 5)
                 pygame.draw.rect(self.surface, self.game.fields[offset].color, rect)
@@ -165,6 +158,16 @@ class UI:
                 scaleFactor = (fieldHeight / 5) / priceTag.get_height()
                 priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
                 self.surface.blit(priceTag, (x + (fieldWidth / 2) - (priceTag.get_width() / 2), y + (4 * fieldHeight / 5)))
+
+            # gracze
+            px = x + (fieldWidth / 12) 
+            py = y + (fieldWidth / 12) 
+            for p in self.game.players:
+                if p.position == offset:
+                    rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
+                    pygame.draw.rect(self.surface, p.color, rect)
+                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                    px += fieldWidth / 8 + fieldWidth / 12
 
             x -= fieldWidth
             offset += 1
@@ -235,16 +238,6 @@ class UI:
                         pygame.draw.rect(self.surface, (198, 245, 236), rect)
                         pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
 
-                # gracze
-                px = x + fieldHeight - (fieldHeight / 6)
-                py = y + (fieldWidth / 12) 
-                for p in self.game.players:
-                    if p.position == offset:
-                        rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                        pygame.draw.rect(self.surface, p.color, rect)
-                        pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
-                        py += fieldWidth / 8 + fieldWidth / 12
-
                 # kolorowy pasek
                 rect = pygame.Rect(x, y, fieldHeight / 5, fieldWidth)
                 pygame.draw.rect(self.surface, self.game.fields[offset].color, rect)
@@ -261,6 +254,16 @@ class UI:
                 priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
                 priceTag = pygame.transform.rotate(priceTag, 270)
                 self.surface.blit(priceTag, (x, y + (fieldWidth / 2) - (priceTag.get_width() / 2)))
+
+            # gracze
+            px = x + fieldHeight - (fieldHeight / 6)
+            py = y + (fieldWidth / 12) 
+            for p in self.game.players:
+                if p.position == offset:
+                    rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
+                    pygame.draw.rect(self.surface, p.color, rect)
+                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                    py += fieldWidth / 8 + fieldWidth / 12
 
             y -= fieldWidth
             offset += 1
@@ -329,16 +332,6 @@ class UI:
                         pygame.draw.rect(self.surface, (198, 245, 236), rect)
                         pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
 
-                # gracze
-                px = x + (fieldWidth / 12)
-                py = y + fieldHeight - (fieldWidth / 4) 
-                for p in self.game.players:
-                    if p.position == offset:
-                        rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                        pygame.draw.rect(self.surface, p.color, rect)
-                        pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
-                        px += fieldWidth / 8 + fieldWidth / 12
-
                 # kolorwy pasek
                 rect = pygame.Rect(x, y, fieldWidth, fieldHeight / 5)
                 pygame.draw.rect(self.surface, self.game.fields[offset].color, rect)
@@ -354,6 +347,16 @@ class UI:
                 scaleFactor = (fieldHeight / 5) / priceTag.get_height()
                 priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
                 self.surface.blit(priceTag, (x + (fieldWidth / 2) - (priceTag.get_width() / 2), y))
+
+            # gracze
+            px = x + (fieldWidth / 12)
+            py = y + fieldHeight - (fieldWidth / 4) 
+            for p in self.game.players:
+                if p.position == offset:
+                    rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
+                    pygame.draw.rect(self.surface, p.color, rect)
+                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                    px += fieldWidth / 8 + fieldWidth / 12
 
             x += fieldWidth
             offset += 1
@@ -422,16 +425,6 @@ class UI:
                         pygame.draw.rect(self.surface, (198, 245, 236), rect)
                         pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
 
-                # gracze
-                px = x + (fieldWidth / 12)
-                py = y + (fieldWidth / 12)
-                for p in self.game.players:
-                    if p.position == offset:
-                        rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                        pygame.draw.rect(self.surface, p.color, rect)
-                        pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
-                        py += fieldWidth / 8 + fieldWidth / 12
-
                 # kolorowy pasek
                 rect = pygame.Rect(x + (4 * fieldHeight / 5), y, fieldHeight / 5, fieldWidth)
                 pygame.draw.rect(self.surface, self.game.fields[offset].color, rect)
@@ -449,5 +442,29 @@ class UI:
                 priceTag = pygame.transform.rotate(priceTag, 90)
                 self.surface.blit(priceTag, (x + (4 * fieldHeight / 5), y + (fieldWidth / 2) - (priceTag.get_width() / 2)))
 
+            # gracze
+            px = x + (fieldWidth / 12)
+            py = y + (fieldWidth / 12)
+            for p in self.game.players:
+                if p.position == offset:
+                    rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
+                    pygame.draw.rect(self.surface, p.color, rect)
+                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                    py += fieldWidth / 8 + fieldWidth / 12
+
             y += fieldWidth
             offset += 1
+
+    def drawPlayerInfo(self):
+        x = 10
+        y = 10
+        for p in self.game.players:
+            pygame.draw.circle(self.surface, p.color, (x + 8, y + 8), 8)
+            pygame.draw.circle(self.surface, (0, 0, 0), (x + 8, y + 8), 8, 2)
+
+            text = self.renderText(str(p.money) + " ECTS")
+            scaleFactor = 16 / text.get_height()
+            text = pygame.transform.smoothscale(text, (int(text.get_width() * scaleFactor), 16))
+            self.surface.blit(text, (x + 20, y))
+
+            y += 20
