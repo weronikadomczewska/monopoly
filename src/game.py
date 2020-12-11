@@ -50,7 +50,7 @@ class Game:
         pass
 
     #akcja na polu tramwaj
-    def tramField(self, player, fieldNumber):
+    def tramField(self, player, fieldNumber=10):
         player.position = fieldNumber
 
     #akcja na polu idź do więzienia
@@ -91,7 +91,7 @@ class Game:
         self.fields.append(Field(name="Artificial Intelligence for Games", color=(255, 0, 0), financial=(48, 20, 60, 150, 220, 30))) # 5.3
         self.fields.append(Field(name="Kurs języka Java", color=(255, 255, 0), financial=(52, 22, 66, 160, 230, 30))) # 6.1
         self.fields.append(Field(name="Kurs języka Rust", color=(255, 255, 0), financial=(52, 22, 66, 160, 230, 30))) # 6.2
-        self.fields.append(Field(name="Praktyka zawodowa w Comarch", isSpecial=True,specialFunction=self.practiseField) # X.2 CENA ZALEŻNA OD LICZBY WYRZUCONYCH OCZEK
+        self.fields.append(Field(name="Praktyka zawodowa w Comarch", isSpecial=True,specialFunction=self.practiseField)) # X.2 CENA ZALEŻNA OD LICZBY WYRZUCONYCH OCZEK
         self.fields.append(Field(name="Języki programowania", color=(255, 255, 0), financial=(56, 24, 72, 170, 240, 30))) # 6.3
         self.fields.append(Field(isSpecial=True,specialFunction=self.goToPrison, imagePath="res/gotojail.png")) # Idź do więzienia
         self.fields.append(Field(name="Analiza numeryczna", color=(0, 153, 0), financial=(60, 26, 78, 190, 255, 40))) # 7.1
