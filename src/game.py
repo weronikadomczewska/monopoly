@@ -162,6 +162,8 @@ class Game:
             self.activePlayer %= len(self.players)
             self.state = self.WAITINGFORDICE
             return False
+
+
         dice1 = randint(1,6)
         dice2 = randint(1, 6)
         p.position += dice1+dice2
@@ -170,7 +172,7 @@ class Game:
         if p.position > 35:
             p.position %= 36
             if p.position != 0:
-                self.fields[0].specialFunction(p)
+                p.money+=30
 
        # dublety
         if dice1 == dice2:
@@ -204,16 +206,16 @@ class Game:
                     #wyświetlanie 'nie stać cię na zakup'
                 else:
                     self.activePlayer += 1
-                    self.activePlayer%= len(self.players)
+                    self.activePlayer %= len(self.players)
                     self.state = self.WAITINGFORDICE
                     p.diceroll = 0
                     return (dice1, dice2)
 
             elif self.fields[p.position].owner != p:
                 # jakaś animacja albo zanznaczenie przekazania piniędzy?
-                oplata =self.fields[p.position].getFeeValue()
+                oplata = self.fields[p.position].getFeeValue()
                 p.money-= oplata
-                self.players[self.fields[p.position].owner].money += oplata
+                self.fields[p.position].owner.money += oplata
 
                 if p.money < 0:
                     raise Exception("Game:input dice: coś jest nie tak, Bankrutów jeszcze nie ma!")
@@ -228,22 +230,24 @@ class Game:
 
             #Upgrade pola
             elif self.fields[p.position].owner == p:
-                    if p.money >= self.fields[p.position].getUpgradeCost():
-                        self.state = self.WAITINGFORDICE
-                        p.diceroll = 0
-                        return (dice1, dice2)
-                    else:
-                        self.activePlayer+=1
-                        self.state = self.WAITINGFORDICE
-                        p.diceroll = 0
-                        return (dice1, dice2)
+                if p.money >= self.fields[p.position].getUpgradeCost():
+                    self.state = self.WAITINGFORUPGRADE
+                    p.diceroll = 0
+                    return (dice1, dice2)
+                else:
+                    self.activePlayer+=1
+                    self.activePlayer %= len(self.players)
+                    self.state = self.WAITINGFORDICE
+                    p.diceroll = 0
+                    return (dice1, dice2)
 
             #                 self.fields[p.position].owner = p
             #                 p.ownedFields.append(self.fields[p.position])
 
 
 
-        raise Exception("Game:input dice: coś jest nie tak, Gdzie ty jesteś na plansz?",str(p.position))
+            else:
+                raise Exception("Game:input dice: coś jest nie tak, Gdzie ty jesteś na plansz?",str(p.position))
 
 
     # kliknięcie do podjęcia decyzji (np. kupna pola)
