@@ -17,6 +17,7 @@ class Player:
         self.color = color
         self.money = money
         self.diceroll = 0
+        self.jailed = 0
         self.position = 0
         self.ownedFields = []
 

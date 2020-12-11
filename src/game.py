@@ -8,7 +8,11 @@ class Game:
     
     WAITINGFORDICE = 1
     WAITINGFORDECISION = 2
-    
+    WAITINGFORCARD = 3
+    WAITINGFORUPGRADE = 4
+    WAITINGFORPURCHASE = 5
+    WAITINGFORREPURCHASE = 6
+
     ''' 
     konstruktor gry
 
@@ -25,7 +29,6 @@ class Game:
     '''
     def initializeFields(self):
         self.fields = []
-        # TODO(Szymon M.): uzupełnić finanse (financial=n1, n2, n3, n4, n5) Done 
 
         self.fields.append(Field(isSpecial=True, imagePath="res/start.png")) #Start
         self.fields.append(Field(name="Współczesne stosunki międzynarodowe", color=(102, 51, 0), financial=(12, 4, 6, 18, 50, 10))) # 1.1 -financial cena,opłata bazowa,opłata 1 poziom,opłata 2 poziom,opłata 3 poziom,cena upgradu
@@ -132,30 +135,179 @@ class Game:
             self.players.append(player)
         else:
             raise Exception("Game:addPlayer: coś jest nie tak, próbowano dodać za dużo graczy!")
-    
-    # funkcja do testowania interfejsu
-    # def takeAction(self):
-    #     for p in self.players:
-    #         p.position += randint(1, 12)
-    #         if p.position > 35:
-    #             p.position %= 36
+    """# funkcja do testowania interfejsu
+    def takeAction(self):
+        for p in self.players:
+            p.position += randint(1, 12)
+            if p.position > 35:
+                p.position %= 36
 
-    #         if self.fields[p.position].owner == None and not self.fields[p.position].isSpecial:
-    #             if random() < 0.05:
-    #                 self.fields[p.position].owner = p
-    #                 p.ownedFields.append(self.fields[p.position])
+            if self.fields[p.position].owner == None and not self.fields[p.position].isSpecial:
+                if random() < 0.05:
+                    self.fields[p.position].owner = p
+                    p.ownedFields.append(self.fields[p.position])
 
-    #         elif self.fields[p.position].owner == p and self.fields[p.position].upgradeLevel < 3:
-    #             if random() < 0.20:
-    #                 self.fields[p.position].upgradeLevel += 1
-
-    # kliknięcie dla rzutu kością
+            elif self.fields[p.position].owner == p and self.fields[p.position].upgradeLevel < 3:
+                if random() < 0.20:
+                    self.fields[p.position].upgradeLevel += 1"""
+        # kliknięcie dla rzutu kością
     def inputDice(self):
         # rzut kością, przesunięcie gracza, odpalenie funkcji pola na które stanął
+
+        p=self.players[self.activePlayer]
+
+        if p.jailed > 0:
+            p.jailed=-1
+            self.activePlayer += 1
+            self.state = self.WAITINGFORDICE
+            return False
+        dice1 = randint(1,6)
+        dice2 = randint(1, 6)
+        p.position += dice1+dice2
+
+        #przechodzenie przez start
+        if p.position > 35:
+            p.position %= 36
+            if p.position != 0:
+                self.fields[0].specialFunction(p)
+
+       # dublety
+        if dice1 == dice2:
+            p.diceroll+=1
+            if p.position == 27:
+                self.state = self.WAITINGFORDECISION
+                self.fields[p.position].specialFunction(p)
+                p.diceroll = 0
+                return (dice1,dice2)
+            else:
+               # 3 dublety z rzędu
+                if p.diceroll == 3:
+                    self.state = self.WAITINGFORDECISION
+                    self.fields[27].specialFunction(p)
+                    p.diceroll = 0
+                    return (dice1, dice2)
+        else:
+            if self.fields[p.position].isSpecial == True:
+                self.state = self.WAITINGFORDECISION
+                self.fields[p.position].specialFunction(p)
+                p.diceroll = 0
+                return (dice1, dice2)
+
+
+            #nie zajęte pole
+            elif self.fields[p.position].owner == None:
+                if p.money >= self.fields[p.position].getPurchaseCost():
+                    self.state = self.WAITINGFORDECISION
+                    p.diceroll = 0
+                    return (dice1, dice2)
+                    #wyświetlanie 'nie stać cię na zakup'
+                else:
+                    self.activePlayer += 1
+                    self.state = self.WAITINGFORDICE
+                    p.diceroll = 0
+                    return (dice1, dice2)
+
+            elif self.fields[p.position].owner != p:
+                # jakaś animacja albo zanznaczenie przekazania piniędzy?
+                oplata =self.fields[p.position].getFeeValue()
+                p.money-= oplata
+                self.players[self.fields[p.position].owner].money += oplata
+
+                if p.money < 0:
+                    raise Exception("Game:input dice: coś jest nie tak, Bankrutów jeszcze nie ma!")
+                    # odkupowanie pola od gracza
+
+                elif p.money < self.fields[p.position].getRepurchaseCost():
+                    self.activePlayer += 1
+                    self.state = self.WAITINGFORDICE
+                    p.diceroll = 0
+                    return (dice1, dice2)
+
+
+
+            elif self.fields[p.position].owner == p:
+                self.state = self.WAITINGFORUPGRADE
+                p.diceroll = 0
+                return (dice1, dice2)
+
+
+                #odkupowanie pola od gracza
+            elif p.money < self.fields[p.position].getRepurchaseCost():
+                self.activePlayer+=1
+                self.state = self.WAITINGFORDICE
+                p.diceroll = 0
+                return (dice1, dice2)
+
+            #                 self.fields[p.position].owner = p
+            #                 p.ownedFields.append(self.fields[p.position])
+
+
+
+
         self.state = self.WAITINGFORDECISION # lub jeśli nie ma możliwości podjęcia żadnej akcji, to self.activePlayer += 1, self.state = self.WAITINGFORDICE
-        pass
+        p.diceroll = 0
+        return(dice1,dice2)
 
     # kliknięcie do podjęcia decyzji (np. kupna pola)
+
+
+
+
+
+    # kupowanie upgradów, podkupowanie pól graczom, wyjście z więzienia, akceptacja karty szansy itp. itd
     def inputDecision(self, decision):
-        # kupowanie upgradów, podkupowanie pól graczom, wyjście z więzienia, akceptacja karty szansy itp. itd
+        p=self.players[self.activePlayer]
+        #zakup
+        if decision== 'Buy':
+            p.money -= self.fields[p.position].getPurchaseCost()
+            self.fields[p.position].owner = p
+            self.activePlayer += 1
+            self.state = self.WAITINGFORDICE
+        #upgrade
+        elif decision == 'Upgrade':
+            p.money -= self.fields[p.position].getUpgradeCost()
+            self.fields[p.position].upgradeLevel +=1
+            self.activePlayer += 1
+            self.state = self.WAITINGFORDICE
+
+        #odkup
+        elif decision == 'Repurchase':
+            p.money -= self.fields[p.position].getRepurchaseCost()
+            self.fields[p.position].upgradeLevel = 0
+            self.fields[p.position].owner = p
+            self.activePlayer += 1
+            self.state = self.WAITINGFORDICE
+
+        #akceptacja
+        elif decision == 'Yes':
+            self.activePlayer += 1
+            self.state = self.WAITINGFORDICE
+
+        #wyjście z więzienia
+        elif decision == 'Bribe':
+            p.money-= 30 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!kwota?
+            self.activePlayer += 1 # ruch po wyjściu z więzienia????????????
+            self.state = self.WAITINGFORDICE
+        #brake out
+        elif decision == 'Break_out':
+            p.money-= 10 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!kwota?
+            dice1 = randint(1, 6)
+            dice2 = randint(1, 6)
+            if dice1!=dice2:
+                p.money-= 30 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!kwota?
+            self.activePlayer += 1 # ruch po wyjściu z więzienia????????????
+            self.state = self.WAITINGFORDICE
+            return (dice1,dice2)
+
+
+
+        else:
+            raise Exception("Game:input decision: coś jest nie tak, Takiej decyzji jeszcze nie ma!")
+
+
+
+
+
+
+
         pass
