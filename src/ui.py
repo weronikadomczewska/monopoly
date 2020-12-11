@@ -106,14 +106,14 @@ class UI:
             x += diceSize
             self.surface.blit(secondImage, (x, y))
 
-            # if self.drawDice[0] == self.drawDice[1]:
-            #     print("dublet!")
-            #     x -= diceSize + boardSize / 4
-            #     double = self.renderText("Dublet! Rzucasz jeszcze raz!")
-            #     scaleFactor = (boardSize / 2) / double.get_width()
-            #     double = pygame.transform.smoothscale(double, (int(double.get_width() * scaleFactor), int(double.get_height())))
-            #     y -= double.get_height * 1.5
-            #     self.surface.blit(double, (x, y))
+            if self.drawDice[0] == self.drawDice[1]:
+                print("dublet!")
+                x -= diceSize + boardSize / 4
+                double = self.renderText("Dublet! Rzucasz jeszcze raz!")
+                scaleFactor = (boardSize / 2) / double.get_width()
+                double = pygame.transform.smoothscale(double, (int(double.get_width() * scaleFactor), int(double.get_height())))
+                y -= double.get_height() * 1.5
+                self.surface.blit(double, (x, y))
 
             self.drawDice = False
 
