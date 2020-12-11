@@ -73,3 +73,4 @@ class Field:
 #
 # p1 = Player(isBot=True, color=(255, 0, 0), money=600) - tworzy gracza komputerowego o kolorze czerwonym, który posiada 600 pieniędzy
 # p2 = Player(money=100) - tworzy gracza (niekomputerowego) o kolorze czarnym i gotówce 100
+    def specialFunction(self):

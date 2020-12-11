@@ -27,10 +27,11 @@ class Game:
     '''
     funkcja inicjalizująca planszę, tworzy wszystkie pola i dodaje je do listy self.fields
     '''
+    # self.players[self.activePlayer]
     def initializeFields(self):
         self.fields = []
 
-        self.fields.append(Field(isSpecial=True, imagePath="res/start.png")) #Start
+        self.fields.append(Field(isSpecial=True,specialFunction=lambda (), <imagePath="res/start.png")) #Start
         self.fields.append(Field(name="Współczesne stosunki międzynarodowe", color=(102, 51, 0), financial=(12, 4, 6, 18, 50, 10))) # 1.1 -financial cena,opłata bazowa,opłata 1 poziom,opłata 2 poziom,opłata 3 poziom,cena upgradu
         self.fields.append(Field(name="Szansa", isSpecial=True, imagePath="res/noimage.png")) # Szansa
         self.fields.append(Field(name="Historia Filozofii", color=(102, 51, 0), financial=(12, 4, 12, 36, 90, 10))) # 1.2
@@ -162,6 +163,8 @@ class Game:
             self.activePlayer %= len(self.players)
             self.state = self.WAITINGFORDICE
             return False
+
+
         dice1 = randint(1,6)
         dice2 = randint(1, 6)
         p.position += dice1+dice2
@@ -170,7 +173,7 @@ class Game:
         if p.position > 35:
             p.position %= 36
             if p.position != 0:
-                self.fields[0].specialFunction(p)
+                p.money+=30
 
        # dublety
         if dice1 == dice2:
@@ -187,6 +190,8 @@ class Game:
                     self.fields[27].specialFunction(p)
                     p.diceroll = 0
                     return (dice1, dice2)
+                else:
+                    return (dice1,dice2)
         else:
             if self.fields[p.position].isSpecial == True:
                 self.state = self.WAITINGFORDECISION
@@ -204,16 +209,16 @@ class Game:
                     #wyświetlanie 'nie stać cię na zakup'
                 else:
                     self.activePlayer += 1
-                    self.activePlayer%= len(self.players)
+                    self.activePlayer %= len(self.players)
                     self.state = self.WAITINGFORDICE
                     p.diceroll = 0
                     return (dice1, dice2)
 
             elif self.fields[p.position].owner != p:
                 # jakaś animacja albo zanznaczenie przekazania piniędzy?
-                oplata =self.fields[p.position].getFeeValue()
+                oplata = self.fields[p.position].getFeeValue()
                 p.money-= oplata
-                self.players[self.fields[p.position].owner].money += oplata
+                self.fields[p.position].owner.money += oplata
 
                 if p.money < 0:
                     raise Exception("Game:input dice: coś jest nie tak, Bankrutów jeszcze nie ma!")
@@ -228,22 +233,31 @@ class Game:
 
             #Upgrade pola
             elif self.fields[p.position].owner == p:
+                if self.fields[p.position].upgradeLevel < 3:
                     if p.money >= self.fields[p.position].getUpgradeCost():
-                        self.state = self.WAITINGFORDICE
+                        self.state = self.WAITINGFORUPGRADE
                         p.diceroll = 0
                         return (dice1, dice2)
                     else:
-                        self.activePlayer+=1
+                        self.activePlayer += 1
+                        self.activePlayer %= len(self.players)
                         self.state = self.WAITINGFORDICE
                         p.diceroll = 0
                         return (dice1, dice2)
+                else:
+                    self.activePlayer+=1
+                    self.activePlayer %= len(self.players)
+                    self.state = self.WAITINGFORDICE
+                    p.diceroll = 0
+                    return (dice1, dice2)
 
             #                 self.fields[p.position].owner = p
             #                 p.ownedFields.append(self.fields[p.position])
 
 
 
-        raise Exception("Game:input dice: coś jest nie tak, Gdzie ty jesteś na plansz?",str(p.position))
+            else:
+                raise Exception("Game:input dice: coś jest nie tak, Gdzie ty jesteś na plansz?",str(p.position))
 
 
     # kliknięcie do podjęcia decyzji (np. kupna pola)
