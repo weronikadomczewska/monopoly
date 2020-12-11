@@ -9,6 +9,7 @@ class UI:
         self.closed = False
         self.needRedraw = True
         self.clicked = False
+        self.drawDice = False
 
         pygame.display.init()
         info = pygame.display.Info()
@@ -17,9 +18,21 @@ class UI:
         self.surface = pygame.display.set_mode((info.current_w - 300, info.current_h - 150), pygame.RESIZABLE)
 
         pygame.font.init()
-        self.font = pygame.font.SysFont("Courier", 32, True)
+        self.fontBold = pygame.font.SysFont("Courier", 32, True)
+        self.font = pygame.font.SysFont("Courier", 32, False)
         self.timer = time.time()
         
+        # wczytanie obrazków
+        self.images = {}
+        for f in self.game.fields:
+            if f.isSpecial:
+                if f.imagePath not in self.images:
+                    self.images[f.imagePath] = pygame.image.load(f.imagePath)
+        
+        for i in range(1, 7):
+            self.images[f"dice{i}"] = pygame.image.load(f"res/dice{i}.png")
+
+
     def gameTick(self):
 
         # przetworzenie zdarzeń okna gry
@@ -33,6 +46,22 @@ class UI:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.clicked = True
 
+        # obsługa stanów gry
+        if self.game.state == self.game.WAITINGFORDICE:
+            if self.clicked == True:
+                self.drawDice = self.game.inputDice()
+                self.needRedraw = True
+
+        elif self.game.state == self.game.WAITINGFORDECISION:
+            if self.clicked == True:
+                self.game.inputDecision("Yes")
+                self.needRedraw = True
+
+        elif self.game.state == self.game.WAITINGFORPURCHASE:
+            if self.clicked == True:
+                self.game.inputDecision("Buy")
+                self.needRedraw = True
+
         # leniwe rysowanie interfejsu - tylko wtedy gdy jest potrzeba
         if self.needRedraw:
             self.surface.fill((255, 255, 255)) # czyszczenie ekranu
@@ -40,26 +69,12 @@ class UI:
             self.drawPlayerInfo()
             self.needRedraw = False
             pygame.display.update() # pokazanie narysowanego interfejsu
-
-        # obsługa stanów gry
-        if self.game.state == self.game.WAITINGFORDICE:
-            if self.clicked == True:
-                print("click!")
-                self.game.inputDice()
-                self.needRedraw = True
-
-        elif self.game.state == self.game.WAITINGFORDECISION:
-            if self.clicked == True:
-                print("click!")
-
-                self.game.inputDecision(0)
-                self.needRedraw = True
         
         # czyszczenie
         self.clicked = False
 
-    def renderText(self, text):
-        return self.font.render(text, True, (0, 0, 0))
+    def renderText(self, text, bold=True):
+        return self.fontBold.render(text, True, (0, 0, 0)) if bold else self.font.render(text, True, (0, 0, 0))
 
     # tymczasowa (bardzo brzydka) implementacja rysowania planszy
     # TODO(Karol M.): napisać ten kod porządnie!
@@ -74,6 +89,33 @@ class UI:
         cornerSize = fieldWidth * 1.5 # rozmiar pola narożnego
         fieldHeight = cornerSize # "wysokość" pola, taka sama jak pole narożne
         borderWidth = 2 # szerokość obrysu pól
+
+        # rysowanie kostek po rzucie
+        if self.drawDice:
+            firstImage = self.images[f"dice{self.drawDice[0]}"]
+            secondImage = self.images[f"dice{self.drawDice[1]}"]
+
+            diceSize = fieldWidth / 2
+            firstImage = pygame.transform.smoothscale(firstImage, (int(diceSize), int(diceSize)))
+            secondImage = pygame.transform.smoothscale(secondImage, (int(diceSize), int(diceSize)))
+
+            x = marginHorizontal + (boardSize / 2) - diceSize
+            y = marginVertical + boardSize - cornerSize - diceSize - (fieldHeight / 2)
+
+            self.surface.blit(firstImage, (x, y))
+            x += diceSize
+            self.surface.blit(secondImage, (x, y))
+
+            # if self.drawDice[0] == self.drawDice[1]:
+            #     print("dublet!")
+            #     x -= diceSize + boardSize / 4
+            #     double = self.renderText("Dublet! Rzucasz jeszcze raz!")
+            #     scaleFactor = (boardSize / 2) / double.get_width()
+            #     double = pygame.transform.smoothscale(double, (int(double.get_width() * scaleFactor), int(double.get_height())))
+            #     y -= double.get_height * 1.5
+            #     self.surface.blit(double, (x, y))
+
+            self.drawDice = False
 
         x = marginHorizontal + boardSize - cornerSize
         y = marginVertical + boardSize - cornerSize
@@ -100,7 +142,7 @@ class UI:
 
                 counter += 1
 
-        image = pygame.image.load(self.game.fields[0].imagePath)
+        image = self.images[self.game.fields[0].imagePath]
         image = pygame.transform.smoothscale(image, (int(cornerSize / 1.5), int(cornerSize / 1.5)))
         self.surface.blit(image, (x + (cornerSize / 2) - int(cornerSize / 3), y + (cornerSize / 2) - int(cornerSize / 3)))
 
@@ -195,7 +237,7 @@ class UI:
 
                 counter += 1
 
-        image = pygame.image.load(self.game.fields[offset].imagePath)
+        image = self.images[self.game.fields[offset].imagePath]
         image = pygame.transform.smoothscale(image, (int(cornerSize / 1.5), int(cornerSize / 1.5)))
         self.surface.blit(image, (x + (cornerSize / 2) - int(cornerSize / 3), y + (cornerSize / 2) - int(cornerSize / 3)))
 
@@ -290,7 +332,7 @@ class UI:
 
                 counter += 1
 
-        image = pygame.image.load(self.game.fields[offset].imagePath)
+        image = self.images[self.game.fields[offset].imagePath]
         image = pygame.transform.smoothscale(image, (int(cornerSize / 1.5), int(cornerSize / 1.5)))
         self.surface.blit(image, (x + (cornerSize / 2) - int(cornerSize / 3), y + (cornerSize / 2) - int(cornerSize / 3)))
 
@@ -382,7 +424,7 @@ class UI:
 
                 counter += 1
 
-        image = pygame.image.load(self.game.fields[offset].imagePath)
+        image = self.images[self.game.fields[offset].imagePath]
         image = pygame.transform.smoothscale(image, (int(cornerSize / 1.5), int(cornerSize / 1.5)))
         self.surface.blit(image, (x + (cornerSize / 2) - int(cornerSize / 3), y + (cornerSize / 2) - int(cornerSize / 3)))
 
@@ -458,13 +500,15 @@ class UI:
     def drawPlayerInfo(self):
         x = 10
         y = 10
+        i = 0
         for p in self.game.players:
             pygame.draw.circle(self.surface, p.color, (x + 8, y + 8), 8)
             pygame.draw.circle(self.surface, (0, 0, 0), (x + 8, y + 8), 8, 2)
 
-            text = self.renderText(str(p.money) + " ECTS")
+            text = self.renderText(str(p.money) + " ECTS", (self.game.activePlayer == i))
             scaleFactor = 16 / text.get_height()
             text = pygame.transform.smoothscale(text, (int(text.get_width() * scaleFactor), 16))
             self.surface.blit(text, (x + 20, y))
 
             y += 20
+            i += 1
