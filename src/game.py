@@ -234,7 +234,7 @@ class Game:
                         self.state = self.WAITINGFORDECISION
                         self.fields[27].specialFunction(self,p)
                         p.diceroll = 0
-                        return (dice1, dice2,true)
+                        return (dice1, dice2, True)
                     else:
                         self.state = self.WAITINGFORDECISION
                         return (dice1, dice2)
