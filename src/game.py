@@ -234,7 +234,11 @@ class Game:
                         self.state = self.WAITINGFORDECISION
                         self.fields[27].specialFunction(self,p)
                         p.diceroll = 0
+<<<<<<< Updated upstream
                         return (dice1, dice2, True)
+=======
+                        return (dice1, dice2,True)
+>>>>>>> Stashed changes
                     else:
                         self.state = self.WAITINGFORDECISION
                         return (dice1, dice2)
