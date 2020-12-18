@@ -72,6 +72,11 @@ class UI:
                 self.game.inputDecision("Upgrade")
                 self.needRedraw = True
 
+        elif self.game.state == self.game.WAITINGFORJAIL:
+            if self.clicked == True:
+                self.game.inputDecision("Bribe")
+                self.needRedraw = True
+
         # leniwe rysowanie interfejsu - tylko wtedy gdy jest potrzeba
         if self.needRedraw:
             self.surface.fill((255, 255, 255)) # czyszczenie ekranu
