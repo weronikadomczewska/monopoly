@@ -198,10 +198,11 @@ class Game:
                 p.jailed -= 1
                 self.activePlayer += 1
                 self.activePlayer %= len(self.players)
-                dec = p.botDecideJail()
-                if (dec == True):
-                    p.money -= 30  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!kwota?
-                # brake out
+                if p.money>30:
+                    dec = p.botDecideJail()
+                    if (dec == True):
+                        p.money -= 30  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!kwota?
+                    # brake out
                 else:
                     dice1 = randint(1, 6)
                     dice2 = randint(1, 6)
@@ -239,7 +240,7 @@ class Game:
                         self.state = self.WAITINGFORDICE
                         return (dice1, dice2, True)
                     else:
-                        self.state = self.WAITINGFORDECISION
+                        self.state = self.WAITINGFORDICE
                         return (dice1, dice2, True)
 
             # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -331,6 +332,9 @@ class Game:
         else: # PLAYER ONE
             if p.jailed > 0:
                 p.jailed-=1
+                if p.money<30:
+                    self.inputDecision('Break_out')
+                    return False
                 self.state = self.WAITINGFORJAIL
                 return False
 
