@@ -223,7 +223,7 @@ class Game:
             if dice1 == dice2:
                 p.diceroll += 1
                 if p.position == 27:
-                    self.fields[p.position].specialFunction(self, p)
+                    self.fields[p.position].specialFunction(p)
                     p.diceroll = 0
                     self.activePlayer += 1  # ruch po wyjściu z więzienia????????????
                     self.activePlayer %= len(self.players)
@@ -232,7 +232,7 @@ class Game:
                 else:
                     # 3 dublety z rzędu
                     if p.diceroll == 3:
-                        self.fields[27].specialFunction(self, p)
+                        self.fields[27].specialFunction(p)
                         p.diceroll = 0
                         self.activePlayer += 1  # ruch po wyjściu z więzienia????????????
                         self.activePlayer %= len(self.players)
@@ -245,7 +245,7 @@ class Game:
             # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
             if self.fields[p.position].isSpecial == True:
                 self.state = self.WAITINGFORDECISION
-                self.fields[p.position].specialFunction(self, p)
+                self.fields[p.position].specialFunction(p)
                 p.diceroll = 0
                 return (dice1, dice2, True)
             # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -298,7 +298,7 @@ class Game:
                 if self.fields[p.position].upgradeLevel < 3:
                     if p.money >= self.fields[p.position].getUpgradeCost():
                         dec=p.botDecideUpgrade(self.fields[p.position])
-                        if (dec==True)
+                        if (dec==True):
                             p.money -= self.fields[p.position].getUpgradeCost()
                             self.fields[p.position].upgradeLevel += 1
                         self.activePlayer += 1
@@ -348,14 +348,14 @@ class Game:
                 p.diceroll+=1
                 if p.position == 27:
                     self.state = self.WAITINGFORDECISION
-                    self.fields[p.position].specialFunction(self,p)
+                    self.fields[p.position].specialFunction(p)
                     p.diceroll = 0
                     return (dice1,dice2)
                 else:
                    # 3 dublety z rzędu
                     if p.diceroll == 3:
                         self.state = self.WAITINGFORDECISION
-                        self.fields[27].specialFunction(self,p)
+                        self.fields[27].specialFunction(p)
                         p.diceroll = 0
                         return (dice1, dice2)
                     else:
@@ -364,7 +364,7 @@ class Game:
             else:
                 if self.fields[p.position].isSpecial == True:
                     self.state = self.WAITINGFORDECISION
-                    self.fields[p.position].specialFunction(self,p)
+                    self.fields[p.position].specialFunction(p)
                     p.diceroll = 0
                     return (dice1, dice2)
 
