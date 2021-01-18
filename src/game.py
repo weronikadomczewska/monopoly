@@ -132,12 +132,12 @@ class Game:
             'Trafiło ci się najłatwiejsze zadanie domowe. Otrzymujesz 5 ECTSów.',
             'W ostatniej chwili zdążyłeś na autobus. Rzuć kostką jeszcze raz.',
             'Dźwiękowcy z Hollywood proszą cię o pomoc. Otrzymujesz 50 ECTSów, jeśli posiadasz pole „Analiza matematyczna”.',
-            'Dzięki indyjskim poradnikom na YT udało Ci się napisać względnie działający program. Otrzymujesz 10 ECTSów.',
+            'Dzięki indyjskim poradnikom na YT udało ci się napisać względnie działający program. Otrzymujesz 10 ECTSów.',
             'Grając w Starcrafta II napotkałeś na kolosa. Otrzymujesz kolokwium, które możesz postawić na swoim dowolnym polu. (o ile posiadasz jakiekolwiek pole, na którym można je postawić)', # jeśli będzie to bardziej wygodne do napisania to pole może być losowe
-            'Kupiłeś procesor AMD, dzięki któremu możesz się uczyć w ciepłej atmosferze. To dobrze wpływa na twoje wyniki w nauce.  Otrzymujesz 10 ECTSów.',
+            'Kupiłeś procesor AMD, dzięki któremu możesz się uczyć w gorącej atmosferze. To dobrze wpływa na twoje wyniki w nauce.  Otrzymujesz 10 ECTSów.',
             'W poszukiwaniu inteligencji udajesz się na pole „Artificial Intelligence for Games”. Jeśli przejdziesz przez start, otrzymujesz 30 ECTSów.',
             'Nareszcie zdałeś egzamin na prawo jazdy. Przesuń pionek o 15 pól do przodu.',
-            'Wydało się, że nie masz szacunku do logiki. Arnold Schwarzenegger rzuca Tobą o ścianę, a profesor odejmuje Ci 30 ECTSów.',
+            'Wydało się, że nie masz szacunku do logiki. Arnold Schwarzenegger rzuca tobą o ścianę, a profesor odejmuje ci 30 ECTSów.', #czy to nie jest zbyt inside joke?
             'Dostałeś zadanie napisania systemu operacyjnego w Malbolge. Nie podołałeś, przez co tracisz 45 ECTSów.',
             'Przez przypadek wszedłeś do budynku wydziału matematyki. Cofnij się o 3 pola.',
             'Grzybobranie! Każdy gracz traci 10 ECTSów.',
@@ -150,13 +150,13 @@ class Game:
             'Zaspałeś na zajęcia. Tracisz 10 ECTSów.',
             'Indukcyjnie udowodniono, że nie ma dla ciebie miejsca na tej uczelni. Tracisz 15 ECTSów.',
             'Ukąsił cię jadowity python. Tracisz 10 ECTSów na zakup surowicy.',
-            'Przez nierozsądne użycie funkcji remove() twój program okazuje się mieć niespodziewanie dużą złożoność algorytmiczną i zawiesza ci komputer. Tracisz 10 ECTSów.',
-            'Nie wyłączywszy wcześniej udostępniania ekranu wpisujesz niefortunnie „LaTeX insert” w Google. Tracisz 10 ECTSów.',
-            'Dostałeś na logice zadanie ze zbiorem for(int i = 0; i < 10; i++) {cout<<”w zbiorze „;}. Gubisz się, przez co tracisz 10 ECTSów. ',
-            'Oszukiwałeś na quizie. Zawiedziony tobą BBe odejmuje ci 15 ECTSów.',
-            'Wysyłasz na SKOS zdjęcie pracy domowej wykonane ziemniakiem, w złym oświetleniu i w jakości 10p.  Nikt nie może się doczytać twojego rozwiązania, przez co tracisz 10 ECTSów.',
+            'Przez nierozsądne użycie funkcji remove() twój program okazuje się mieć niespodziewanie dużą złożoność obliczeniową i zawiesza ci komputer. Tracisz 10 ECTSów.',
+            'Nie wyłączywszy wcześniej udostępniania ekranu, wpisujesz niefortunnie „LaTeX insert” w Google. Tracisz 10 ECTSów.', #może coś innego?
+            'Dostałeś na logice zadanie ze zbiorem for(int i = 0; i < 10; i++) {cout<<"w zbiorze ";}. Gubisz się, przez co tracisz 10 ECTSów. ',
+            'Oszukiwałeś na quizie. Zawiedziony tobą prowadzący odejmuje ci 15 ECTSów.',
+            'Wysyłasz na SKOS zdjęcie pracy domowej wykonane ziemniakiem, w złym oświetleniu i w jakości 10p.  Nikt nie potrafi przeczytać twojego rozwiązania, przez co tracisz 10 ECTSów.',
             'Jako jedyny dostałeś najtrudniejsze zadanie z whitebooka w ramach zadania domowego. Oddajesz po 5 ECTSów każdemu graczowi.',
-            'Wielokrotne ścinki sprawiają, że przestajesz dogadywać się ze swoim komputerem. Postanawiasz zatem udać się na pole „Komunikacja człowiek-komputer”. Jeśli przejdziesz przez start, otrzymujesz 30 ECTSów.',
+            'Wielokrotne ścinki sprawiły, że przestałeś dogadywać się ze swoim komputerem. Postanowiłeś zatem udać się na pole „Komunikacja człowiek-komputer”. Jeśli przejdziesz przez start, otrzymujesz 30 ECTSów.',
             'Przez przypadek wpisałeś w konsolę linuxa "sudo rm -rf /". Idziesz na pole naprawy komputera.'       
         ]
 
