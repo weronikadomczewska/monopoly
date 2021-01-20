@@ -131,7 +131,7 @@ class Game:
     # new-house > postaw budynek w danym miejscu
     # go-to-jail > idź do więzienia
 
-    def card-effect(self, player, card, value):
+    def card_effect(self, player, card, value):
 
         if card == 'add':
             player.money += value
