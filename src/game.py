@@ -121,43 +121,88 @@ class Game:
                 self.fields.append(Field(color=color))
         '''
 
-    '''
-    funkcja inicjalizująca karty, dodaje je do list self.positiveCards i self.negativeCards
-    '''
+    # add > zmiana poziomu pieniędzy gracza
+    # get-from-all > otrzymujesz n pieniędzy od wszystkich graczy
+    # all > wszyscy gracze dostają n pieniędzy
+    # dice > dodatkowy rzut kostką
+    # add-if > zmień poziom pieniędzy gracza przy spełnieniu jakiegoś warunku
+    # travel > idź na wskazane pole
+    # go > idź o n pól do przodu
+    # new-house > postaw budynek w danym miejscu
+    # go-to-jail > idź do więzienia
+
+    def card-effect(self, player, card, value):
+
+        if card == 'add':
+            player.money += value
+
+        elif card == 'get-from-all':
+            for p in self.players:
+                p.money -= value
+                player.money += value
+
+        elif card == 'all':
+            for p in self.players:
+                p.money += value
+        
+        elif card == 'dice':
+            self.state = self.WAITINGFORDICE
+
+        elif card == 'add-if':
+            for i in player.ownedFields:
+                if i.name == "Analiza matematyczna":
+                    player.money += value
+
+        elif card == 'travel':
+            player.position = value
+        
+        elif card == 'lost':
+            value = random.randint(0, 35)
+            player.position = value
+
+        elif card == 'human':
+            value = random.choice(1, 3)
+            player.position = value
+
+        elif card == 'go':
+            raise NotImplementedError("Program nie jest jeszcze na to gotów")
+            
+        elif card == 'go-to-jail':
+            self.goToPrison(player)
+
     def initializeCards(self):
         self.cards = [
-            'Zająłeś drugie miejsce w konkursie piękności wydziału informatyki. Otrzymujesz 10 ECTSów.',
-            'Stworzyłeś mema, który spodobał się pozostałym studentom, a nawet wykładowcy. Pobierz po 5 ECTSów od każdego gracza.',
-            'Jak wiadomo, grzyby najszybciej rosną po deszczu. Ze względu na globalne ocieplenie nie otrzymujesz żadnego grzyba, a wręcz przeciwnie. Otrzymujesz 10 ECTSów.',
-            'Trafiło ci się najłatwiejsze zadanie domowe. Otrzymujesz 5 ECTSów.',
-            'W ostatniej chwili zdążyłeś na autobus. Rzuć kostką jeszcze raz.',
-            'Dźwiękowcy z Hollywood proszą cię o pomoc. Otrzymujesz 50 ECTSów, jeśli posiadasz pole „Analiza matematyczna”.',
-            'Dzięki indyjskim poradnikom na YT udało ci się napisać względnie działający program. Otrzymujesz 10 ECTSów.',
-            'Grając w Starcrafta II napotkałeś na kolosa. Otrzymujesz kolokwium, które możesz postawić na swoim dowolnym polu. (o ile posiadasz jakiekolwiek pole, na którym można je postawić)', # jeśli będzie to bardziej wygodne do napisania to pole może być losowe
-            'Kupiłeś procesor AMD, dzięki któremu możesz się uczyć w gorącej atmosferze. To dobrze wpływa na twoje wyniki w nauce.  Otrzymujesz 10 ECTSów.',
-            'W poszukiwaniu inteligencji udajesz się na pole „Artificial Intelligence for Games”. Jeśli przejdziesz przez start, otrzymujesz 30 ECTSów.',
-            'Nareszcie zdałeś egzamin na prawo jazdy. Przesuń pionek o 15 pól do przodu.',
-            'Wydało się, że nie masz szacunku do logiki. Arnold Schwarzenegger rzuca tobą o ścianę, a profesor odejmuje ci 30 ECTSów.', #czy to nie jest zbyt inside joke?
-            'Dostałeś zadanie napisania systemu operacyjnego w Malbolge. Nie podołałeś, przez co tracisz 45 ECTSów.',
-            'Przez przypadek wszedłeś do budynku wydziału matematyki. Cofnij się o 3 pola.',
-            'Grzybobranie! Każdy gracz traci 10 ECTSów.',
-            'Twój mikrofon wydaje dziwne dźwięki, przez co nie możesz zaprezentować swojego rozwiązania na ćwiczeniach. Tracisz 5 ECTSów.',
-            'Podczas rozwiązywania quizu natrafiasz na błąd "invalidsesskey”, przez który nie możesz przesłać rozwiązania. Tracisz 10 ECTSów.',
-            'Przez problemy z Internetem nie możesz zaprezentować swojego rozwiązania na ćwiczeniach. Tracisz 10 ECTSów.',
-            'Zgubiłeś się w budynku uczelni. Idź na losowe pole.',
-            'Zapominasz wyłączyć mikrofon na wykładzie, gdy niecenzuralne słowo wymyka się ukradkiem z twoich ust. Tracisz 5 ECTSów.',
-            'Obudził się w tobie wewnętrzny humanista. Idź na losowe pole brązowe. Jeśli przejdziesz przez start, otrzymujesz 30 ECTSów.',
-            'Zaspałeś na zajęcia. Tracisz 10 ECTSów.',
-            'Indukcyjnie udowodniono, że nie ma dla ciebie miejsca na tej uczelni. Tracisz 15 ECTSów.',
-            'Ukąsił cię jadowity python. Tracisz 10 ECTSów na zakup surowicy.',
-            'Przez nierozsądne użycie funkcji remove() twój program okazuje się mieć niespodziewanie dużą złożoność obliczeniową i zawiesza ci komputer. Tracisz 10 ECTSów.',
-            'Nie wyłączywszy wcześniej udostępniania ekranu, wpisujesz niefortunnie „LaTeX insert” w Google. Tracisz 10 ECTSów.', #może coś innego?
-            'Dostałeś na logice zadanie ze zbiorem for(int i = 0; i < 10; i++) {cout<<"w zbiorze ";}. Gubisz się, przez co tracisz 10 ECTSów. ',
-            'Oszukiwałeś na quizie. Zawiedziony tobą prowadzący odejmuje ci 15 ECTSów.',
-            'Wysyłasz na SKOS zdjęcie pracy domowej wykonane ziemniakiem, w złym oświetleniu i w jakości 10p.  Nikt nie potrafi przeczytać twojego rozwiązania, przez co tracisz 10 ECTSów.',
-            'Jako jedyny dostałeś najtrudniejsze zadanie z whitebooka w ramach zadania domowego. Oddajesz po 5 ECTSów każdemu graczowi.',
-            'Wielokrotne ścinki sprawiły, że przestałeś dogadywać się ze swoim komputerem. Postanowiłeś zatem udać się na pole „Komunikacja człowiek-komputer”. Jeśli przejdziesz przez start, otrzymujesz 30 ECTSów.',
-            'Przez przypadek wpisałeś w konsolę linuxa "sudo rm -rf /". Idziesz na pole naprawy komputera.'       
+            ('Zająłeś drugie miejsce w konkursie piękności wydziału informatyki. Otrzymujesz 10 ECTSów.', 'add', 10),
+            ('Stworzyłeś mema, który spodobał się pozostałym studentom, a nawet wykładowcy. Pobierz po 5 ECTSów od każdego gracza.', 'get-from-all', 5),
+            ('Jak wiadomo, grzyby najszybciej rosną po deszczu. Ze względu na globalne ocieplenie nie otrzymujesz żadnego grzyba, a wręcz przeciwnie. Otrzymujesz 10 ECTSów.', 'add', 10),
+            ('Trafiło ci się najłatwiejsze zadanie domowe. Otrzymujesz 5 ECTSów.', 'add', 5),
+            ('W ostatniej chwili zdążyłeś na autobus. Rzuć kostką jeszcze raz.', 'dice', 0),
+            ('Dźwiękowcy z Hollywood proszą cię o pomoc. Otrzymujesz 50 ECTSów, jeśli posiadasz pole „Analiza matematyczna”.', 'add-if', 50),
+            ('Dzięki indyjskim poradnikom na YT udało ci się napisać względnie działający program. Otrzymujesz 10 ECTSów.', 'add', 10),
+            ('Kupiłeś procesor AMD, dzięki któremu możesz się uczyć w gorącej atmosferze. To dobrze wpływa na twoje wyniki w nauce.  Otrzymujesz 10 ECTSów.', 'add', 10),
+            ('W poszukiwaniu inteligencji udajesz się na pole „Artificial Intelligence for Games”. Jeśli przejdziesz przez start, otrzymujesz 30 ECTSów.', 'travel', 22),
+            ('Nareszcie zdałeś egzamin na prawo jazdy. Przesuń pionek o 15 pól do przodu.', 'go', 15),
+            ('Wydało się, że nie masz szacunku do logiki. Arnold Schwarzenegger rzuca tobą o ścianę, a profesor odejmuje ci 30 ECTSów.', 'add', -30),
+            ('Dostałeś zadanie napisania systemu operacyjnego w Malbolge. Nie podołałeś, przez co tracisz 45 ECTSów.', 'add', -45),
+            ('Przez przypadek wszedłeś do budynku wydziału matematyki. Cofnij się o 3 pola.', 'go', -3),
+            ('Grzybobranie! Każdy gracz traci 10 ECTSów.', 'all', -10),
+            ('Twój mikrofon wydaje dziwne dźwięki, przez co nie możesz zaprezentować swojego rozwiązania na ćwiczeniach. Tracisz 5 ECTSów.', 'add', -5),
+            ('Podczas rozwiązywania quizu natrafiasz na błąd "invalidsesskey”, przez który nie możesz przesłać rozwiązania. Tracisz 10 ECTSów.', 'add', -10),
+            ('Przez problemy z Internetem nie możesz zaprezentować swojego rozwiązania na ćwiczeniach. Tracisz 10 ECTSów.', 'add', -10),
+            ('Zgubiłeś się w budynku uczelni. Idź na losowe pole.', 'lost', 0),
+            ('Zapominasz wyłączyć mikrofon na wykładzie, gdy niecenzuralne słowo wymyka się ukradkiem z twoich ust. Tracisz 5 ECTSów.', 'add', -5),
+            ('Obudził się w tobie wewnętrzny humanista. Idź na losowe pole brązowe. Jeśli przejdziesz przez start, otrzymujesz 30 ECTSów.', 'human', 0),
+            ('Zaspałeś na zajęcia. Tracisz 10 ECTSów.', 'add', -10),
+            ('Indukcyjnie udowodniono, że nie ma dla ciebie miejsca na tej uczelni. Tracisz 15 ECTSów.', 'add', -15),
+            ('Ukąsił cię jadowity python. Tracisz 10 ECTSów na zakup surowicy.', 'add', -10),
+            ('Przez nierozsądne użycie funkcji remove() twój program okazuje się mieć niespodziewanie dużą złożoność obliczeniową i zawiesza ci komputer. Tracisz 10 ECTSów.', 'add', -10),
+            ('Nie wyłączywszy wcześniej udostępniania ekranu, wpisujesz niefortunnie „LaTeX insert” w Google. Tracisz 10 ECTSów.', 'add', -10),
+            ('Dostałeś na logice zadanie ze zbiorem for(int i = 0; i < 10; i++) {cout<<"w zbiorze ";}. Gubisz się, przez co tracisz 10 ECTSów. ', 'add', -10),
+            ('Oszukiwałeś na quizie. Zawiedziony tobą prowadzący odejmuje ci 15 ECTSów.', 'add', -15),
+            ('Wysyłasz na SKOS zdjęcie pracy domowej wykonane ziemniakiem, w złym oświetleniu i w jakości 10p.  Nikt nie potrafi przeczytać twojego rozwiązania, przez co tracisz 10 ECTSów.', 'add', -10),
+            ('Jako jedyny dostałeś najtrudniejsze zadanie z whitebooka w ramach zadania domowego. Oddajesz po 5 ECTSów każdemu graczowi.', 'get-from-all', -5),
+            ('Wielokrotne ścinki sprawiły, że przestałeś dogadywać się ze swoim komputerem. Postanowiłeś zatem udać się na pole „Komunikacja człowiek-komputer”. Jeśli przejdziesz przez start, otrzymujesz 30 ECTSów.', 'travel' ,12),
+            ('Przez przypadek wpisałeś w konsolę linuxa "sudo rm -rf /". Idziesz na pole naprawy komputera.', 'go-to-jail', 0)
         ]
 
     '''
