@@ -233,68 +233,31 @@ class Game:
                 if random() < 0.20:
                     self.fields[p.position].upgradeLevel += 1"""
         # kliknięcie dla rzutu kością
-    def inputDice(self):
-        # rzut kością, przesunięcie gracza, odpalenie funkcji pola na które stanął
+    def zmiana_aktywnego_gracza(self):
+        self.activePlayer +=1
+        self.activePlayer %=len(self.players)
+        self.state = self.WAITINGFORDICE
+        self.players[self.activePlayer].diceroll=0
 
-        p=self.players[self.activePlayer]
+    def czy_wszyscy_gracze_jeszcze_graja(self):
+        for i in self.players:
+            if i.money < 0:
+                raise Exception("Game:input dice:Bot: coś jest nie tak, Bankrutów jeszcze nie ma!")
+
+    def go_to_field(self,pole):
+        # rzut kością, przesunięcie gracza, odpalenie funkcji pola na które stanął
+        p = self.players[self.activePlayer]
+        pole_stare = p.position
+        p.position = pole
 
         if p.isBot == True:
-            if p.jailed > 0:
-                p.jailed -= 1
-                self.activePlayer += 1
-                self.activePlayer %= len(self.players)
-                if p.money>30:
-                    dec = p.botDecideJail()
-                    if (dec == True):
-                        p.money -= 30  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!kwota?
-                    # brake out
-                else:
-                    dice1 = randint(1, 6)
-                    dice2 = randint(1, 6)
-                    if dice1 != dice2:
-                        self.activePlayer += 1  # ruch po wyjściu z więzienia????????????
-                        self.activePlayer %= len(self.players)
-                        self.state = self.WAITINGFORDICE
-                        return (dice1, dice2, True)
-                    # jak bot wyszedł kontynujemy program
+            if pole<pole_stare:
+                if pole!=0:
+                    self.startField(p)
 
-            dice1 = randint(1, 6)
-            dice2 = randint(1, 6)
-            p.position += dice1 + dice2
-            if p.position > 35:
-                p.position %= 36
-                if p.position != 0:
-                    p.money += 30  # jakajakjest taeraz z polem 0???
-
-            if dice1 == dice2:
-                p.diceroll += 1
-                if p.position == 27:
-                    self.fields[p.position].specialFunction(p)
-                    p.diceroll = 0
-                    self.activePlayer += 1  # ruch po wyjściu z więzienia????????????
-                    self.activePlayer %= len(self.players)
-                    self.state = self.WAITINGFORDICE
-                    return (dice1, dice2, True)
-                else:
-                    # 3 dublety z rzędu
-                    if p.diceroll == 3:
-                        self.fields[27].specialFunction(p)
-                        p.diceroll = 0
-                        self.activePlayer += 1  # ruch po wyjściu z więzienia????????????
-                        self.activePlayer %= len(self.players)
-                        self.state = self.WAITINGFORDICE
-                        return (dice1, dice2, True)
-                    else:
-                        self.state = self.WAITINGFORDICE
-                        return (dice1, dice2, True)
-
-            # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
             if self.fields[p.position].isSpecial == True:
-                self.state = self.WAITINGFORDECISION
                 self.fields[p.position].specialFunction(p)
-                p.diceroll = 0
-                return (dice1, dice2, True)
-            # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                self.zmiana_aktywnego_gracza()
             # nie zajęte pole
             elif self.fields[p.position].owner == None:
                 if p.money >= self.fields[p.position].getPurchaseCost():
@@ -302,18 +265,11 @@ class Game:
                     if (dec == True):
                         p.money -= self.fields[p.position].getPurchaseCost()
                         self.fields[p.position].owner = p
-                    self.activePlayer += 1
-                    self.activePlayer %= len(self.players)
-                    self.state = self.WAITINGFORDICE
-                    p.diceroll = 0
-                    return (dice1, dice2, True)
+                    self.zmiana_aktywnego_gracza()
                     # wyświetlanie 'nie stać cię na zakup'
                 else:
-                    self.activePlayer += 1
-                    self.activePlayer %= len(self.players)
-                    self.state = self.WAITINGFORDICE
-                    p.diceroll = 0
-                    return (dice1, dice2, True)
+                    self.zmiana_aktywnego_gracza()
+
             elif self.fields[p.position].owner != p:
                 # jakaś animacja albo zanznaczenie przekazania piniędzy?
                 oplata = self.fields[p.position].getFeeValue()
@@ -323,58 +279,153 @@ class Game:
                     raise Exception("Game:input dice:Bot: coś jest nie tak, Bankrutów jeszcze nie ma!")
                     # odkupowanie pola od gracza
                 elif p.money < self.fields[p.position].getRepurchaseCost():
-                    self.activePlayer += 1
-                    self.activePlayer %= len(self.players)
-                    self.state = self.WAITINGFORDICE
-                    p.diceroll = 0
-                    return (dice1, dice2, True)
+                    self.zmiana_aktywnego_gracza()
                 else:
                     dec = p.botDecideRepurchase(self.fields[p.position])  # argumenty???????
                     if (dec == True):
                         p.money -= self.fields[p.position].getRepurchaseCost()
                         self.fields[p.position].upgradeLevel = 0
                         self.fields[p.position].owner = p
-                    self.activePlayer += 1
-                    self.activePlayer %= len(self.players)
-                    self.state = self.WAITINGFORDICE
-                    p.diceroll = 0
-                    return (dice1, dice2, True)
+                    self.zmiana_aktywnego_gracza()
             # Upgrade pola
             elif self.fields[p.position].owner == p:
                 if self.fields[p.position].upgradeLevel < 3:
                     if p.money >= self.fields[p.position].getUpgradeCost():
-                        dec=p.botDecideUpgrade(self.fields[p.position])
-                        if (dec==True):
+                        dec = p.botDecideUpgrade(self.fields[p.position])
+                        if (dec == True):
                             p.money -= self.fields[p.position].getUpgradeCost()
                             self.fields[p.position].upgradeLevel += 1
-                        self.activePlayer += 1
-                        self.activePlayer %= len(self.players)
-                        self.state = self.WAITINGFORDICE
-                        p.diceroll = 0
-                        return (dice1, dice2, True)
+                        self.zmiana_aktywnego_gracza()
                     else:
-                        self.activePlayer += 1
-                        self.activePlayer %= len(self.players)
-                        self.state = self.WAITINGFORDICE
-                        p.diceroll = 0
-                        return (dice1, dice2, True)
+                        self.zmiana_aktywnego_gracza()
                 else:
-                    self.activePlayer += 1
-                    self.activePlayer %= len(self.players)
-                    self.state = self.WAITINGFORDICE
-                    p.diceroll = 0
-                    return (dice1, dice2, True)
+                    self.zmiana_aktywnego_gracza()
             #                 self.fields[p.position].owner = p
             #                 p.ownedFields.append(self.fields[p.position])
             else:
-                raise Exception("Game:input dice:Bot: coś jest nie tak, Gdzie ty jesteś na plansz?", str(p.position))
+                raise Exception("Game:go to:Bot: coś jest nie tak, Gdzie ty jesteś na plansz?",
+                                str(p.position))
+            raise Exception("Game: go to:Bot: coś jest nie tak, Gdzie ty jesteś na plansz?",str(p.position))
+
+
+        # -------------------------------------------------------------------------------------------------------------------
+
+        else:  # Active Player is not a bot
+            # przechodzenie przez start
+            if pole<pole_stare:
+                if pole!=0:
+                    self.startField(p)
+
+            if self.fields[p.position].isSpecial == True:
+                self.state = self.WAITINGFORDECISION
+                self.fields[p.position].specialFunction(p)
+                self.czy_wszyscy_gracze_jeszcze_graja()
+                p.diceroll = 0
+                return False
+
+
+            # nie zajęte pole
+            elif self.fields[p.position].owner == None:
+                if p.money >= self.fields[p.position].getPurchaseCost():
+                    self.state = self.WAITINGFORPURCHASE
+                    p.diceroll = 0
+                    return False
+                    # wyświetlanie 'nie stać cię na zakup'
+                else:
+                    self.zmiana_aktywnego_gracza()
+
+            elif self.fields[p.position].owner != p:
+                # jakaś animacja albo zanznaczenie przekazania piniędzy?
+                oplata = self.fields[p.position].getFeeValue()
+                p.money -= oplata
+                self.fields[p.position].owner.money += oplata
+
+                if p.money < 0:
+                    raise Exception("Game:input dice: coś jest nie tak, Bankrutów jeszcze nie ma!")
+                    # odkupowanie pola od gracza
+
+                elif p.money < self.fields[p.position].getRepurchaseCost():
+                    self.zmiana_aktywnego_gracza()
+                else:
+                    self.state = self.WAITINGFORREPURCHASE
+                    p.diceroll = 0
+                    return False
+
+            # Upgrade pola
+            elif self.fields[p.position].owner == p:
+                if self.fields[p.position].upgradeLevel < 3:
+                    if p.money >= self.fields[p.position].getUpgradeCost():
+                        self.state = self.WAITINGFORUPGRADE
+                        p.diceroll = 0
+                        return False
+                    else:
+                        self.zmiana_aktywnego_gracza()
+                else:
+                    self.zmiana_aktywnego_gracza()
+            else:
+                raise Exception("Game:go to: coś jest nie tak, Gdzie ty jesteś na plansz?",
+                                str(p.position))
+#--------------------------------------------------------------------------------------------------------------------------------
+    def inputDice(self):
+        # rzut kością,
+        p=self.players[self.activePlayer]
+        if p.isBot == True:
+            if p.jailed > 0:
+                p.jailed -= 1
+                if p.money>30:
+                    decision = p.botDecideJail()
+                    if (decision == True):
+                        p.money -= 30
+                        p.jailed=0
+                    else:
+                        self.zmiana_aktywnego_gracza()
+                        dice1 = randint(1, 3)
+                        dice2 = randint(4, 6)
+                        return (dice1, dice2, True)
+
+                    # brake out
+                else:
+                    dice1 = randint(1, 6)
+                    dice2 = randint(1, 6)
+                    if dice1 != dice2:
+                        self.zmiana_aktywnego_gracza()
+                        return (dice1, dice2, True)
+                    else:
+                        p.jailed=0
+                    # jak bot wyszedł kontynujemy program
+
+            dice1 = randint(1, 6)
+            dice2 = randint(1, 6)
+            pole=p.position+dice1+dice2
+            if pole>=36:
+                pole=pole%36
+            if dice1 == dice2:
+                p.diceroll += 1
+                if pole== 27:
+                    self.goToPrison(p)
+                    self.zmiana_aktywnego_gracza()
+                    return (dice1, dice2, True)
+                else:
+                    # 3 dublety z rzędu
+                    if p.diceroll == 3:
+                        self.goToPrison(p)
+                        self.zmiana_aktywnego_gracza()
+                        return (dice1, dice2, True)
+                    else:
+                        if pole<p.position:
+                            p.money+=30
+                        p.position=pole
+                        self.state = self.WAITINGFORDICE
+                        return (dice1, dice2, True)
+            self.go_to_field(pole)
             return (dice1, dice2, True)
 
+            #
 
 #-------------------------------------------------------------------------------------------------------------------
 
 
-        else: # PLAYER ONE
+        else: # Active Player is not a bot
             if p.jailed > 0:
                 p.jailed-=1
                 if p.money<30:
@@ -385,108 +436,36 @@ class Game:
 
             dice1 = randint(1, 6)
             dice2 = randint(1, 6)
-            p.position += dice1 + dice2
-            #przechodzenie przez start
-            if p.position > 35:
-                p.position %= 36
-                if p.position != 0:
-                    p.money+=30
-
+            pole = p.position + dice1 + dice2
+            if pole >=36:
+                pole = pole % 36
            # dublety
             if dice1 == dice2:
                 p.diceroll+=1
                 if p.position == 27:
-                    self.state = self.WAITINGFORDECISION
-                    self.fields[p.position].specialFunction(p)
+                    self.goToPrison(p)
                     p.diceroll = 0
+                    self.zmiana_aktywnego_gracza()
                     return (dice1,dice2)
                 else:
                    # 3 dublety z rzędu
                     if p.diceroll == 3:
-                        self.state = self.WAITINGFORDECISION
-                        self.fields[27].specialFunction(p)
+                        self.goToPrison(p)
                         p.diceroll = 0
+                        self.zmiana_aktywnego_gracza()
                         return (dice1, dice2)
                     else:
-                        self.state = self.WAITINGFORDECISION
+                        self.state = self.WAITINGFORDICE
+                        if pole<p.position:
+                            p.money+=30
+                        p.position=pole
                         return (dice1,dice2)
             else:
-                if self.fields[p.position].isSpecial == True:
-                    self.state = self.WAITINGFORDECISION
-                    self.fields[p.position].specialFunction(p)
-                    p.diceroll = 0
-                    return (dice1, dice2)
-
-
-                #nie zajęte pole
-                elif self.fields[p.position].owner == None:
-                    if p.money >= self.fields[p.position].getPurchaseCost():
-                        self.state = self.WAITINGFORPURCHASE
-                        p.diceroll = 0
-                        return (dice1, dice2)
-                        #wyświetlanie 'nie stać cię na zakup'
-                    else:
-                        self.activePlayer += 1
-                        self.activePlayer %= len(self.players)
-                        self.state = self.WAITINGFORDICE
-                        p.diceroll = 0
-                        return (dice1, dice2)
-
-                elif self.fields[p.position].owner != p:
-                    # jakaś animacja albo zanznaczenie przekazania piniędzy?
-                    oplata = self.fields[p.position].getFeeValue()
-                    p.money-= oplata
-                    self.fields[p.position].owner.money += oplata
-
-                    if p.money < 0:
-                        raise Exception("Game:input dice: coś jest nie tak, Bankrutów jeszcze nie ma!")
-                        # odkupowanie pola od gracza
-
-                    elif p.money < self.fields[p.position].getRepurchaseCost():
-                        self.activePlayer += 1
-                        self.activePlayer %= len(self.players)
-                        self.state = self.WAITINGFORDICE
-                        p.diceroll = 0
-                        return (dice1, dice2)
-                    else:
-                        self.state = self.WAITINGFORREPURCHASE
-                        p.diceroll = 0
-                        return (dice1, dice2)
-
-                #Upgrade pola
-                elif self.fields[p.position].owner == p:
-                    if self.fields[p.position].upgradeLevel < 3:
-                        if p.money >= self.fields[p.position].getUpgradeCost():
-                            self.state = self.WAITINGFORUPGRADE
-                            p.diceroll = 0
-                            return (dice1, dice2)
-                        else:
-                            self.activePlayer += 1
-                            self.activePlayer %= len(self.players)
-                            self.state = self.WAITINGFORDICE
-                            p.diceroll = 0
-                            return (dice1, dice2)
-                    else:
-                        self.activePlayer+=1
-                        self.activePlayer %= len(self.players)
-                        self.state = self.WAITINGFORDICE
-                        p.diceroll = 0
-                        return (dice1, dice2)
-
-                #                 self.fields[p.position].owner = p
-                #                 p.ownedFields.append(self.fields[p.position])
-
-
-
-                else:
-                    raise Exception("Game:input dice: coś jest nie tak, Gdzie ty jesteś na plansz?",str(p.position))
+                self.go_to_field(pole)
+                return (dice1, dice2)
 
 
     # kliknięcie do podjęcia decyzji (np. kupna pola)
-
-
-
-
 
     # kupowanie upgradów, podkupowanie pól graczom, wyjście z więzienia, akceptacja karty szansy itp. itd
     def inputDecision(self, decision):
@@ -495,46 +474,39 @@ class Game:
         if decision== 'Buy':
             p.money -= self.fields[p.position].getPurchaseCost()
             self.fields[p.position].owner = p
-            self.activePlayer += 1
-            self.activePlayer %= len(self.players)
-            self.state = self.WAITINGFORDICE
+            self.zmiana_aktywnego_gracza()
         #upgrade
         elif decision == 'Upgrade':
             p.money -= self.fields[p.position].getUpgradeCost()
             self.fields[p.position].upgradeLevel +=1
-            self.activePlayer += 1
-            self.activePlayer %= len(self.players)
-            self.state = self.WAITINGFORDICE
+            self.zmiana_aktywnego_gracza()
 
         #odkup
         elif decision == 'Repurchase':
             p.money -= self.fields[p.position].getRepurchaseCost()
             self.fields[p.position].upgradeLevel = 0
             self.fields[p.position].owner = p
-            self.activePlayer += 1
-            self.activePlayer %= len(self.players)
-            self.state = self.WAITINGFORDICE
+            self.zmiana_aktywnego_gracza()
 
         #akceptacja
         elif decision == 'Yes':
-            self.activePlayer += 1
-            self.activePlayer %= len(self.players)
-            self.state = self.WAITINGFORDICE
+            self.zmiana_aktywnego_gracza()
+            self.czy_wszyscy_gracze_jeszcze_graja()
 
         #wyjście z więzienia
         elif decision == 'Bribe':
             p.money-= 30 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!kwota?
+            p.jailed=0
             self.state = self.WAITINGFORDICE
         #brake out
         elif decision == 'Break_out':
             dice1 = randint(1, 6)
             dice2 = randint(1, 6)
             if dice1!=dice2:
-                self.activePlayer += 1  # ruch po wyjściu z więzienia????????????
-                self.activePlayer %= len(self.players)
-                self.state = self.WAITINGFORDICE
+                self.zmiana_aktywnego_gracza()
                 return (dice1, dice2)
             self.state = self.WAITINGFORDICE
+            p.jailed = 0
             return (dice1,dice2)
 
 
