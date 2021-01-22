@@ -493,7 +493,7 @@ class Game:
         if decision== 'Buy':
             p.money -= self.fields[p.position].getPurchaseCost()
             self.fields[p.position].owner = p
-            p.ownedFields.append(self.fields[player.position])
+            p.ownedFields.append(self.fields[p.position])
             self.zmiana_aktywnego_gracza()
         #upgrade
         elif decision == 'Upgrade':
