@@ -91,7 +91,7 @@ class Game:
     def initializeFields(self):
         self.fields = []
 
-        self.fields.append(Field(isSpecial=True,specialFunction=self.startField, imagePath="res/start.png")) #Start
+        self.fields.append(Field(name="Start", isSpecial=True,specialFunction=self.startField, imagePath="res/start.png")) #Start
         self.fields.append(Field(name="Współczesne stosunki międzynarodowe", color=(102, 51, 0), financial=(12, 4, 6, 18, 50, 10))) # 1.1 -financial cena,opłata bazowa,opłata 1 poziom,opłata 2 poziom,opłata 3 poziom,cena upgradu
         self.fields.append(Field(name="Szansa", isSpecial=True,specialFunction=self.chanceField , imagePath="res/noimage.png")) # Szansa
         self.fields.append(Field(name="Historia Filozofii", color=(102, 51, 0), financial=(12, 4, 12, 36, 90, 10))) # 1.2

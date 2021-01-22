@@ -11,6 +11,7 @@ class UI:
         self.clicked = False
         self.drawDice = False
         self.fields = []
+        self.fieldName = ""
 
         pygame.display.init()
         info = pygame.display.Info()
@@ -67,6 +68,14 @@ class UI:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.clicked = True
+
+            if event.type == pygame.MOUSEMOTION:
+                f = self.getField(pygame.mouse.get_pos())
+                if f != -1:
+                    self.fieldName = self.game.fields[f].name
+                else:
+                    self.fieldName = ""
+                self.needRedraw = True
 
         # obsługa stanów gry
         if self.game.state == self.game.WAITINGFORDICE:
@@ -163,6 +172,12 @@ class UI:
         fieldHeight = cornerSize # "wysokość" pola, taka sama jak pole narożne
         borderWidth = 2 # szerokość obrysu pól
 
+        # rysowanie nazwy najechanego pola
+        text = self.renderText(self.fieldName)
+        scaleFactor = (3 * marginVertical / 4) / text.get_height()
+        text = pygame.transform.smoothscale(text, (int(text.get_width() * scaleFactor), int(3 * marginVertical / 4)))
+        self.surface.blit(text, (marginHorizontal + boardSize / 2 - text.get_width() / 2, marginVertical / 2 - text.get_height() / 2))
+
         # rysowanie kostek po rzucie
         if self.drawDice:
             firstImage = self.images[f"dice{self.drawDice[0]}"]
@@ -234,7 +249,7 @@ class UI:
 
                 if self.game.fields[offset].owner != None:
                     off = fieldHeight / 5
-                    rect = pygame.Rect(x + fieldWidth - off + 2, y + fieldHeight - (fieldHeight / 5) - off + 2, off, off)
+                    rect = pygame.Rect(x + fieldWidth - off, y + fieldHeight - (fieldHeight / 5) - off + 2, off, off)
                     pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
                     pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
                 
