@@ -295,6 +295,7 @@ class Game:
     def bankrut(self,player):
         player.bankrupt= True
         player.money = 0
+        player.total_jailed=0
         z=0
         for gracz in self.players:
             if gracz.bankrupt == True:
