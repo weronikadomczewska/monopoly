@@ -94,6 +94,7 @@ class UI:
                     self.game.tram(f)
                 else:
                     pass
+                self.needRedraw = True
 
 
         # leniwe rysowanie interfejsu - tylko wtedy gdy jest potrzeba
