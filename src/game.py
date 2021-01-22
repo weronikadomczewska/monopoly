@@ -27,6 +27,7 @@ class Game:
         self.players = []
         self.state = self.WAITINGFORDICE
         self.activePlayer = 0
+        self.winner = None
     
     '''
     funkcja inicjalizująca planszę, tworzy wszystkie pola i dodaje je do listy self.fields
@@ -260,9 +261,12 @@ class Game:
     def game_over(self):
         tabela=[]
         for player in self.players:
-            tabela.append([player.money,player.ownedFields,player.total_jailed])
-
-        return statistics(tabela)
+            wartość_skumulowana=0
+            for pole in player.ownedFields:
+                wartość_skumulowana+=pole.financial[0]+pole.upgradeLevel*pole.financial[6]
+            tabela.append([player.money,wartość_skumulowana,player.total_jailed])
+        statistics(tabela)
+        return False
 
 
     def doktorat(self):
@@ -272,6 +276,7 @@ class Game:
                 z+=1
         if z>=6:
             self.state = self.KONIECGRY
+            self.winner=self.players[self.activePlayer]
             return False
 
 
@@ -300,7 +305,11 @@ class Game:
         player.ownedFields=[]
         if z==3:
             self.state = self.KONIECGRY
+            for gracz in self.players:
+                if gracz.bankrupt == False:
+                    self.winner = self.players[self.activePlayer]
             return False
+
 
 
 
