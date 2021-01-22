@@ -161,12 +161,14 @@ class Game:
 
         elif card == 'get-from-all':
             for p in self.players:
-                p.money -= value
-                player.money += value
+                if not p.bankrupt:
+                    p.money -= value
+                    player.money += value
 
         elif card == 'all':
             for p in self.players:
-                p.money += value
+                if not p.bankrupt:
+                    p.money += value
         
         elif card == 'dice':
             self.state = self.WAITINGFORDICE
