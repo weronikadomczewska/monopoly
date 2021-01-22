@@ -1,6 +1,7 @@
 
 from field import Field
 from random import randint, random, choice
+from monopoly_table import statistics
 
 ''' klasa reprezentująca rozgrywkę '''
 
@@ -254,8 +255,19 @@ class Game:
             elif self.fields[p.position].owner == p and self.fields[p.position].upgradeLevel < 3:
                 if random() < 0.20:
                     self.fields[p.position].upgradeLevel += 1"""
+
+    def doktorat(self):
+        z=0
+        for pole in self.players[self.activePlayer].ownedFields:
+            if pole.upgradeLevel==3
+                z+=1
+        if z>=6:
+            self.state = self.KONIECGRY
+
+
         # kliknięcie dla rzutu kością
     def zmiana_aktywnego_gracza(self):
+        self.doktorat()
         self.activePlayer +=1
         self.activePlayer %=len(self.players)
         if self.players[self.activePlayer].bankrupt==True:
@@ -266,10 +278,14 @@ class Game:
     #Bankrut:
     def bankrut(self,player):
         player.bankrupt= True
+        player.money = 0
         z=0
         for gracz in self.players:
             if gracz.bankrupt == True:
                 z+=1
+        for pole in player.ownedFields:
+            pole.owner=None
+            pole.upgradeLevel = 0
         if z==3:
             self.state = self.KONIECGRY
 
