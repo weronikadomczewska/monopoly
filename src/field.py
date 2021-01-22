@@ -17,7 +17,7 @@ class Field:
     def __init__(self, name="DEFAULT", color=(0, 0, 0), financial=(0, 0, 0, 0, 0, 0), isSpecial=False, specialFunction=None, hoverFunction=None, imagePath="res/noimage.png"):
         self.name = name
         self.color = color
-        self.financial = financial
+        self.financial = list(financial)
         self.isSpecial = isSpecial
         self.specialFunction = specialFunction
         self.hoverFunction = hoverFunction
