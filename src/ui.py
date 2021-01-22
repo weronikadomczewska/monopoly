@@ -10,6 +10,7 @@ class UI:
         self.needRedraw = True
         self.clicked = False
         self.drawDice = False
+        self.fields = []
 
         pygame.display.init()
         info = pygame.display.Info()
@@ -32,6 +33,15 @@ class UI:
         for i in range(1, 7):
             self.images[f"dice{i}"] = pygame.image.load(f"res/dice{i}.png")
 
+
+    def detectClick(self, mousePos, rect):
+        return (rect[0] <= mousePos[0] <= rect[2]) and (rect[1] <= mousePos[1] <= rect[3])
+
+    def getField(self, mousePos):
+        for i in range(len(self.fields)):
+            if self.detectClick(mousePos, self.fields[i]):
+                return i
+        return -1
 
     def gameTick(self):
 
@@ -77,6 +87,15 @@ class UI:
                 self.game.inputDecision("Bribe")
                 self.needRedraw = True
 
+        elif self.game.state == self.game.WAITINGFORTRAM:
+            if self.clicked == True:
+                f = self.getField(pygame.mouse.get_pos())
+                if f != -1:
+                    self.game.tram(f)
+                else:
+                    pass
+
+
         # leniwe rysowanie interfejsu - tylko wtedy gdy jest potrzeba
         if self.needRedraw:
             self.surface.fill((255, 255, 255)) # czyszczenie ekranu
@@ -94,6 +113,8 @@ class UI:
     # tymczasowa (bardzo brzydka) implementacja rysowania planszy
     # TODO(Karol M.): napisać ten kod porządnie!
     def drawBoard(self):
+
+        self.fields = []
 
         w = self.surface.get_width() # szerokość okna
         h = self.surface.get_height() # wysokość okna
@@ -138,6 +159,7 @@ class UI:
         rect = pygame.Rect(x, y, cornerSize, cornerSize)
         pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
         offset = 0
+        self.fields.append((x, y, x + cornerSize, y + cornerSize))
 
         px = x + (cornerSize / 12)
         py = y + (cornerSize / 12)
@@ -168,6 +190,8 @@ class UI:
         for _ in range(8):
             rect = pygame.Rect(x, y, fieldWidth, fieldHeight)
             pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+
+            self.fields.append((x, y, x + fieldWidth, y + fieldHeight))
 
             if not self.game.fields[offset].isSpecial:
 
@@ -233,6 +257,7 @@ class UI:
 
         rect = pygame.Rect(x, y, cornerSize, cornerSize)
         pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+        self.fields.append((x, y, x + cornerSize, y + cornerSize))
 
         px = x + (cornerSize / 12)
         py = y + (cornerSize / 12)
@@ -262,6 +287,8 @@ class UI:
         for _ in range(8):
             rect = pygame.Rect(x, y, fieldHeight, fieldWidth)
             pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+
+            self.fields.append((x, y, x + fieldHeight, y + fieldWidth))
 
             if not self.game.fields[offset].isSpecial:
                 
@@ -328,6 +355,7 @@ class UI:
         y -= (fieldWidth / 2)
         rect = pygame.Rect(x, y, cornerSize, cornerSize)
         pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+        self.fields.append((x, y, x + cornerSize, y + cornerSize))
 
         px = x + (cornerSize / 12)
         py = y + (cornerSize / 12)
@@ -357,6 +385,8 @@ class UI:
         for _ in range(8):
             rect = pygame.Rect(x, y, fieldWidth, fieldHeight)
             pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+
+            self.fields.append((x, y, x + fieldWidth, y + fieldHeight))
 
             if not self.game.fields[offset].isSpecial:
 
@@ -420,6 +450,7 @@ class UI:
 
         rect = pygame.Rect(x, y, cornerSize, cornerSize)
         pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+        self.fields.append((x, y, x + cornerSize, y + cornerSize))
 
         px = x + (cornerSize / 12)
         py = y + (cornerSize / 12)
@@ -449,6 +480,8 @@ class UI:
         for _ in range(8):
             rect = pygame.Rect(x, y, fieldHeight, fieldWidth)
             pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
+
+            self.fields.append((x, y, x + fieldHeight, y + fieldWidth))
 
             if not self.game.fields[offset].isSpecial:
 
