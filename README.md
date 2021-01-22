@@ -12,7 +12,7 @@ Python 3.x
 ```sh
 sudo apt install python3 python3-pip
 pip3 install matplotlib pygame
-python3 src/main.py
+bash start.sh
 ```
 
 # Obsługa
