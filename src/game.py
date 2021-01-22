@@ -47,6 +47,7 @@ class Game:
     #akcja na polu więzienie
     def prisonField(self, player):
         player.jailed = 2
+        player.total_jailed += 1
     
     #TODO
     #akcja na polu specjalnym praktyka w Nokii (pole, którego nie można odkupić)
@@ -77,6 +78,7 @@ class Game:
     def goToPrison(self, player):
         player.position = 9
         player.jailed = 3
+        player.total_jailed += 1
 
     #akcja na polu mały grzyb
     def littleMushroom(self, player):
