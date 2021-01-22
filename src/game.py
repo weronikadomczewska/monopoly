@@ -58,7 +58,7 @@ class Game:
 
     #akcja tramwaju
     def tram(self,position):
-        if self.fields(position).owner!= self.activePlayer and self.fields(position).owner!= None:
+        if self.fields[position].owner!= self.activePlayer and self.fields[position].owner!= None:
             self.state = self.WAITINGFORTRAM
             return 'Pole innego gracza. Nie można wejść na to pole!'
         else:
@@ -495,6 +495,7 @@ class Game:
         #odkup
         elif decision == 'Repurchase':
             p.money -= self.fields[p.position].getRepurchaseCost()
+            owner = self.fields[p.position].owner
             self.fields[p.position].upgradeLevel = 0
             self.fields[p.position].owner = p
             self.zmiana_aktywnego_gracza()
