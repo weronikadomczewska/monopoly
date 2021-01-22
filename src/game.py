@@ -178,15 +178,15 @@ class Game:
             player.position = value
         
         elif card == 'lost':
-            value = random.randint(0, 35)
+            value = randint(0, 35)
             player.position = value
 
         elif card == 'human':
-            value = random.choice(1, 3)
+            value = choice(1, 3)
             player.position = value
 
         elif card == 'go':
-            raise NotImplementedError("Program nie jest jeszcze na to gotów")
+            self.go_to_field((player.position + value) % 36)
             
         elif card == 'go-to-jail':
             self.goToPrison(player)
