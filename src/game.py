@@ -258,8 +258,12 @@ class Game:
                 if random() < 0.20:
                     self.fields[p.position].upgradeLevel += 1"""
     def game_over(self):
-        raise Exception("KONIEC")
-        pass
+        tabela=[]
+        for player in self.players:
+            tabela.append([player.money,player.ownedFields,player.total_jailed])
+
+        return statistics(tabela)
+
 
     def doktorat(self):
         z=0
@@ -293,6 +297,7 @@ class Game:
         for pole in player.ownedFields:
             pole.owner=None
             pole.upgradeLevel = 0
+        player.ownedFields=[]
         if z==3:
             self.state = self.KONIECGRY
             return False
