@@ -395,10 +395,10 @@ class Game:
 
             if self.fields[p.position].isSpecial == True:
                 self.state = self.WAITINGFORDECISION
-                self.fields[p.position].specialFunction(p)
+                ret = self.fields[p.position].specialFunction(p)
                 self.czy_wszyscy_gracze_jeszcze_graja()
                 p.diceroll = 0
-                return False
+                return ret
 
 
             # nie zajęte pole
