@@ -379,8 +379,8 @@ class UI:
             # gracze
             px = x + fieldHeight - (fieldHeight / 6)
             py = y + (fieldWidth / 12) 
-            for p in self.game.players and not p.bankrupt:
-                if p.position == offset:
+            for p in self.game.players:
+                if p.position == offset and not p.bankrupt:
                     rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
                     pygame.draw.rect(self.surface, p.color, rect)
                     pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
