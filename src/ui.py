@@ -105,9 +105,10 @@ class UI:
                 if f != -1:
                     self.game.tram(f)
                 else:
-                    pass
+                    pass # TODO: klikaj w pole!
                 self.needRedraw = True
 
+        # self.winner przechowuje wygranego
         elif self.game.state == self.game.KONIECGRY:
             if self.clicked == True:
                 self.game.game_over()
@@ -117,7 +118,7 @@ class UI:
         # leniwe rysowanie interfejsu - tylko wtedy gdy jest potrzeba
         if self.needRedraw:
             self.surface.fill((255, 255, 255)) # czyszczenie ekranu
-            self.drawBoard()
+            self.drawUI()
             self.drawPlayerInfo()
             self.needRedraw = False
             pygame.display.update() # pokazanie narysowanego interfejsu
@@ -147,15 +148,14 @@ class UI:
         return font.render(text, True, color) if bold else font.render(text, True, color)
         
 
-    # tymczasowa (bardzo brzydka) implementacja rysowania planszy
-    # TODO(Karol M.): napisać ten kod porządnie!
-    def drawBoard(self):
+    # rysowanie interfejsu
+    def drawUI(self):
 
         self.fields = []
 
         w = self.surface.get_width() # szerokość okna
         h = self.surface.get_height() # wysokość okna
-        boardSize = min(w, h) - (min(w, h) / 10) # długość boku planszy
+        boardSize = min(w, h) - (min(w, h) / 8) # długość boku planszy
         marginHorizontal = (w - boardSize) / 2 # margines poziomy
         marginVertical = (h - boardSize) / 2 # margines pionowy
         fieldWidth = (boardSize / 11) # "szerokość" pola
@@ -203,16 +203,16 @@ class UI:
         counter = 0
         for p in self.game.players:
             if p.position == offset and not p.bankrupt:
-                rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                pygame.draw.rect(self.surface, p.color, rect)
-                pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                center = (px + cornerSize / 12, py + cornerSize / 12)
+                pygame.draw.circle(self.surface, p.color, center, fieldWidth / 8)
+                pygame.draw.circle(self.surface, (0, 0, 0), center, fieldWidth / 8, 1)
 
                 if counter == 0:
-                    px += (cornerSize / 4.2) * 3
+                    px += (cornerSize / 4.4) * 3
                 elif counter == 1:
-                    py += (cornerSize / 4.2) * 3
+                    py += (cornerSize / 4.4) * 3
                 elif counter == 2:
-                    px -= (cornerSize / 4.2) * 3
+                    px -= (cornerSize / 4.4) * 3
 
                 counter += 1
 
@@ -233,8 +233,10 @@ class UI:
             if not self.game.fields[offset].isSpecial:
 
                 if self.game.fields[offset].owner != None:
-                    pygame.draw.circle(self.surface, self.game.fields[offset].owner.color, (x + (fieldWidth / 6), y + (4 * fieldHeight / 5) - fieldWidth / 7), fieldWidth / 8)
-                    pygame.draw.circle(self.surface, (0, 0, 0), (x + (fieldWidth / 6), y + (4 * fieldHeight / 5) - fieldWidth / 7), fieldWidth / 8, borderWidth)
+                    off = fieldHeight / 5
+                    rect = pygame.Rect(x + fieldWidth - off + 2, y + fieldHeight - (fieldHeight / 5) - off + 2, off, off)
+                    pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
+                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
                 
                 # ulepszenia
                 upgradeLevel = self.game.fields[offset].upgradeLevel
@@ -268,11 +270,13 @@ class UI:
 
                 # cena pola
                 priceTag = None
+                isBold = False
                 if self.game.fields[offset].owner == None:
                     priceTag = self.game.fields[offset].getPurchaseCost()
                 else:
                     priceTag = self.game.fields[offset].getFeeValue()
-                priceTag = self.renderText(str(priceTag))
+                    isBold = True
+                priceTag = self.renderText(str(priceTag), bold=isBold)
                 scaleFactor = (fieldHeight / 5) / priceTag.get_height()
                 priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
                 self.surface.blit(priceTag, (x + (fieldWidth / 2) - (priceTag.get_width() / 2), y + (4 * fieldHeight / 5)))
@@ -282,9 +286,9 @@ class UI:
             py = y + (fieldWidth / 12) 
             for p in self.game.players:
                 if p.position == offset and not p.bankrupt:
-                    rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                    pygame.draw.rect(self.surface, p.color, rect)
-                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                    center = (px + fieldWidth / 10, py + fieldWidth / 10)
+                    pygame.draw.circle(self.surface, p.color, center, fieldWidth / 8)
+                    pygame.draw.circle(self.surface, (0, 0, 0), center, fieldWidth / 8, 1)
                     px += fieldWidth / 8 + fieldWidth / 12
 
             x -= fieldWidth
@@ -301,16 +305,16 @@ class UI:
         counter = 0
         for p in self.game.players:
             if p.position == offset and not p.bankrupt:
-                rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                pygame.draw.rect(self.surface, p.color, rect)
-                pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                center = (px + cornerSize / 12, py + cornerSize / 12)
+                pygame.draw.circle(self.surface, p.color, center, fieldWidth / 8)
+                pygame.draw.circle(self.surface, (0, 0, 0), center, fieldWidth / 8, 1)
 
                 if counter == 0:
-                    px += (cornerSize / 4.2) * 3
+                    px += (cornerSize / 4.4) * 3
                 elif counter == 1:
-                    py += (cornerSize / 4.2) * 3
+                    py += (cornerSize / 4.4) * 3
                 elif counter == 2:
-                    px -= (cornerSize / 4.2) * 3
+                    px -= (cornerSize / 4.4) * 3
 
                 counter += 1
 
@@ -330,8 +334,11 @@ class UI:
             if not self.game.fields[offset].isSpecial:
                 
                 if self.game.fields[offset].owner != None:
-                    pygame.draw.circle(self.surface, self.game.fields[offset].owner.color, (x + (fieldHeight / 5) + (fieldHeight / 10), y + fieldWidth / 6), fieldWidth / 8)
-                    pygame.draw.circle(self.surface, (0, 0, 0), (x + (fieldHeight / 5) + (fieldHeight / 10), y + fieldWidth / 6), fieldWidth / 8, borderWidth)
+
+                    off = fieldHeight / 5
+                    rect = pygame.Rect(x + (fieldHeight / 5) - 2, y, off, off)
+                    pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
+                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
 
                 # ulepszenia
                 upgradeLevel = self.game.fields[offset].upgradeLevel
@@ -366,11 +373,13 @@ class UI:
 
                 # cena pola
                 priceTag = None
+                isBold = False
                 if self.game.fields[offset].owner == None:
                     priceTag = self.game.fields[offset].getPurchaseCost()
                 else:
                     priceTag = self.game.fields[offset].getFeeValue()
-                priceTag = self.renderText(str(priceTag))
+                    isBold = True
+                priceTag = self.renderText(str(priceTag), bold=isBold)
                 scaleFactor = (fieldHeight / 5) / priceTag.get_height()
                 priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
                 priceTag = pygame.transform.rotate(priceTag, 270)
@@ -381,9 +390,9 @@ class UI:
             py = y + (fieldWidth / 12) 
             for p in self.game.players:
                 if p.position == offset and not p.bankrupt:
-                    rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                    pygame.draw.rect(self.surface, p.color, rect)
-                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                    center = (px + fieldWidth / 10, py + fieldWidth / 10)
+                    pygame.draw.circle(self.surface, p.color, center, fieldWidth / 8)
+                    pygame.draw.circle(self.surface, (0, 0, 0), center, fieldWidth / 8, 1)
                     py += fieldWidth / 8 + fieldWidth / 12
 
             y -= fieldWidth
@@ -399,16 +408,16 @@ class UI:
         counter = 0
         for p in self.game.players:
             if p.position == offset and not p.bankrupt:
-                rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                pygame.draw.rect(self.surface, p.color, rect)
-                pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                center = (px + cornerSize / 12, py + cornerSize / 12)
+                pygame.draw.circle(self.surface, p.color, center, fieldWidth / 8)
+                pygame.draw.circle(self.surface, (0, 0, 0), center, fieldWidth / 8, 1)
 
                 if counter == 0:
-                    px += (cornerSize / 4.2) * 3
+                    px += (cornerSize / 4.4) * 3
                 elif counter == 1:
-                    py += (cornerSize / 4.2) * 3
+                    py += (cornerSize / 4.4) * 3
                 elif counter == 2:
-                    px -= (cornerSize / 4.2) * 3
+                    px -= (cornerSize / 4.4) * 3
 
                 counter += 1
 
@@ -428,9 +437,12 @@ class UI:
             if not self.game.fields[offset].isSpecial:
 
                 if self.game.fields[offset].owner != None:
-                    pygame.draw.circle(self.surface, self.game.fields[offset].owner.color, (x + (4 * fieldWidth / 5) + (fieldWidth / 20), y + (fieldHeight / 5) + (fieldHeight / 10)), fieldWidth / 8)
-                    pygame.draw.circle(self.surface, (0, 0, 0), (x + (4 * fieldWidth / 5) + (fieldWidth / 20), y + (fieldHeight / 5) + (fieldHeight / 10)), fieldWidth / 8, 2)
-                
+
+                    off = fieldHeight / 5
+                    rect = pygame.Rect(x + fieldWidth - off, y + off - 2, off, off)
+                    pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
+                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
+
                 # ulepszenia
                 upgradeLevel = self.game.fields[offset].upgradeLevel
                 if upgradeLevel > 0:
@@ -463,11 +475,13 @@ class UI:
 
                 # cena pola
                 priceTag = None
+                isBold = False
                 if self.game.fields[offset].owner == None:
                     priceTag = self.game.fields[offset].getPurchaseCost()
                 else:
                     priceTag = self.game.fields[offset].getFeeValue()
-                priceTag = self.renderText(str(priceTag))
+                    isBold = True
+                priceTag = self.renderText(str(priceTag), bold=isBold)
                 scaleFactor = (fieldHeight / 5) / priceTag.get_height()
                 priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
                 self.surface.blit(priceTag, (x + (fieldWidth / 2) - (priceTag.get_width() / 2), y))
@@ -477,9 +491,9 @@ class UI:
             py = y + fieldHeight - (fieldWidth / 4) 
             for p in self.game.players:
                 if p.position == offset and not p.bankrupt:
-                    rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                    pygame.draw.rect(self.surface, p.color, rect)
-                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                    center = (px + fieldWidth / 10, py + fieldWidth / 10)
+                    pygame.draw.circle(self.surface, p.color, center, fieldWidth / 8)
+                    pygame.draw.circle(self.surface, (0, 0, 0), center, fieldWidth / 8, 1)
                     px += fieldWidth / 8 + fieldWidth / 12
 
             x += fieldWidth
@@ -494,16 +508,16 @@ class UI:
         counter = 0
         for p in self.game.players:
             if p.position == offset and not p.bankrupt:
-                rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                pygame.draw.rect(self.surface, p.color, rect)
-                pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                center = (px + cornerSize / 12, py + cornerSize / 12)
+                pygame.draw.circle(self.surface, p.color, center, fieldWidth / 8)
+                pygame.draw.circle(self.surface, (0, 0, 0), center, fieldWidth / 8, 1)
 
                 if counter == 0:
-                    px += (cornerSize / 4.2) * 3
+                    px += (cornerSize / 4.4) * 3
                 elif counter == 1:
-                    py += (cornerSize / 4.2) * 3
+                    py += (cornerSize / 4.4) * 3
                 elif counter == 2:
-                    px -= (cornerSize / 4.2) * 3
+                    px -= (cornerSize / 4.4) * 3
 
                 counter += 1
 
@@ -523,9 +537,10 @@ class UI:
             if not self.game.fields[offset].isSpecial:
 
                 if self.game.fields[offset].owner != None:
-                    pygame.draw.circle(self.surface, self.game.fields[offset].owner.color, (x + (4 * fieldHeight / 5) - (fieldHeight / 10), y + fieldWidth - (fieldWidth / 6)), fieldWidth / 8)
-                    pygame.draw.circle(self.surface, (0, 0, 0), (x + (4 * fieldHeight / 5) - (fieldHeight / 10), y + fieldWidth - (fieldWidth / 6)), fieldWidth / 8, 2)
-
+                    off = fieldHeight / 5
+                    rect = pygame.Rect(x + fieldHeight - off - fieldHeight / 5 + 2, y + fieldWidth - off, off, off)
+                    pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
+                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
                 # ulepszenia
                 upgradeLevel = self.game.fields[offset].upgradeLevel
                 if upgradeLevel > 0:
@@ -559,11 +574,13 @@ class UI:
 
                 # cena pola
                 priceTag = None
+                isBold = False
                 if self.game.fields[offset].owner == None:
                     priceTag = self.game.fields[offset].getPurchaseCost()
                 else:
                     priceTag = self.game.fields[offset].getFeeValue()
-                priceTag = self.renderText(str(priceTag))
+                    isBold = True
+                priceTag = self.renderText(str(priceTag), bold=isBold)
                 scaleFactor = (fieldHeight / 5) / priceTag.get_height()
                 priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
                 priceTag = pygame.transform.rotate(priceTag, 90)
@@ -574,13 +591,16 @@ class UI:
             py = y + (fieldWidth / 12)
             for p in self.game.players:
                 if p.position == offset and not p.bankrupt:
-                    rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
-                    pygame.draw.rect(self.surface, p.color, rect)
-                    pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
+                    center = (px + fieldWidth / 10, py + fieldWidth / 10)
+                    pygame.draw.circle(self.surface, p.color, center, fieldWidth / 8)
+                    pygame.draw.circle(self.surface, (0, 0, 0), center, fieldWidth / 8, 1)
                     py += fieldWidth / 8 + fieldWidth / 12
 
             y += fieldWidth
             offset += 1
+
+            # środek planszy
+
 
     def drawPlayerInfo(self):
         x = 10
@@ -596,7 +616,7 @@ class UI:
             color = (0, 0, 0)
             if p.bankrupt:
                 color = (128, 128, 128)
-            text = self.renderText(str(p.money) + txt, bold=(self.game.activePlayer == i), size=32, color=color)
+            text = self.renderText(str(p.money if not p.bankrupt else 0) + txt, bold=(self.game.activePlayer == i), size=32, color=color)
             self.surface.blit(text, (x + 40, y))
 
             y += 32
