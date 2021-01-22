@@ -182,7 +182,7 @@ class Game:
             player.position = value
 
         elif card == 'human':
-            value = choice(1, 3)
+            value = randint(1, 3)
             player.position = value
 
         elif card == 'go':
