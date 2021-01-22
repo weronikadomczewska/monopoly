@@ -128,7 +128,6 @@ class UI:
         if self.needRedraw:
             self.surface.fill((255, 255, 255)) # czyszczenie ekranu
             self.drawUI()
-            self.drawPlayerInfo()
             self.needRedraw = False
             pygame.display.update() # pokazanie narysowanego interfejsu
         
@@ -178,32 +177,39 @@ class UI:
         text = pygame.transform.smoothscale(text, (int(text.get_width() * scaleFactor), int(3 * marginVertical / 4)))
         self.surface.blit(text, (marginHorizontal + boardSize / 2 - text.get_width() / 2, marginVertical / 2 - text.get_height() / 2))
 
+        # rysowanie informacji o graczach 
+        self.drawPlayerInfo(marginHorizontal + cornerSize + 5, marginVertical + cornerSize + 5, (boardSize - 2 * cornerSize) / 2)
+
         # rysowanie kostek po rzucie
         if self.drawDice:
             firstImage = self.images[f"dice{self.drawDice[0]}"]
             secondImage = self.images[f"dice{self.drawDice[1]}"]
 
-            diceSize = fieldWidth / 2
+            diceSize = fieldWidth / 1.5
             firstImage = pygame.transform.smoothscale(firstImage, (int(diceSize), int(diceSize)))
             secondImage = pygame.transform.smoothscale(secondImage, (int(diceSize), int(diceSize)))
 
-            x = marginHorizontal + (boardSize / 2) - diceSize
-            y = marginVertical + boardSize - cornerSize - diceSize - (fieldHeight / 2)
+            x = marginHorizontal + boardSize - fieldHeight - 2.2 * diceSize
+            y = marginVertical + cornerSize + 5
+
+            # napis "Kości"
+            dice = self.renderText("Kości")
+            scaleFactor = (diceSize * 2) / dice.get_width()
+            dice = pygame.transform.smoothscale(dice, (int(dice.get_width() * scaleFactor), int(dice.get_height())))
+            self.surface.blit(dice, (x, y))
+            y += diceSize * 0.75
 
             self.surface.blit(firstImage, (x, y))
             x += diceSize
             self.surface.blit(secondImage, (x, y))
+            y += diceSize
+            x -= diceSize
 
             if self.drawDice[0] == self.drawDice[1]:
-                print("dublet!")
-                x -= diceSize + boardSize / 4
-                double = self.renderText("Dublet! Rzucasz jeszcze raz!")
-                scaleFactor = (boardSize / 2) / double.get_width()
+                double = self.renderText("Dublet!")
+                scaleFactor = (diceSize * 2) / double.get_width()
                 double = pygame.transform.smoothscale(double, (int(double.get_width() * scaleFactor), int(double.get_height())))
-                y -= double.get_height() * 1.5
                 self.surface.blit(double, (x, y))
-
-            self.drawDice = False
 
         x = marginHorizontal + boardSize - cornerSize
         y = marginVertical + boardSize - cornerSize
@@ -617,22 +623,22 @@ class UI:
             # środek planszy
 
 
-    def drawPlayerInfo(self):
-        x = 10
-        y = 10
+    def drawPlayerInfo(self, x, y, width):
         i = 0
         for p in self.game.players:
-            pygame.draw.circle(self.surface, p.color, (x + 16, y + 16), 16)
-            pygame.draw.circle(self.surface, (0, 0, 0), (x + 16, y + 16), 16, 2)
+            pygame.draw.circle(self.surface, p.color, (x + 12, y + 12), 12)
+            pygame.draw.circle(self.surface, (0, 0, 0), (x + 12, y + 12), 12, 2)
 
             txt = " ECTS"
             if p.jailed > 0 and not p.bankrupt:
                 txt += " (#)"
+            if self.game.activePlayer == i:
+                txt += " ←"
             color = (0, 0, 0)
             if p.bankrupt:
                 color = (128, 128, 128)
-            text = self.renderText(str(p.money if not p.bankrupt else 0) + txt, bold=(self.game.activePlayer == i), size=32, color=color)
-            self.surface.blit(text, (x + 40, y))
+            text = self.renderText(str(p.money if not p.bankrupt else 0) + txt, bold=(self.game.activePlayer == i), size=24, color=color)
+            self.surface.blit(text, (x + 32, y))
 
-            y += 32
+            y += 26
             i += 1
