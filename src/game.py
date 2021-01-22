@@ -255,14 +255,19 @@ class Game:
             elif self.fields[p.position].owner == p and self.fields[p.position].upgradeLevel < 3:
                 if random() < 0.20:
                     self.fields[p.position].upgradeLevel += 1"""
+    def game_over(self):
+        raise Exception("KONIEC")
+        pass
 
     def doktorat(self):
         z=0
         for pole in self.players[self.activePlayer].ownedFields:
-            if pole.upgradeLevel==3
+            if pole.upgradeLevel==3:
                 z+=1
         if z>=6:
             self.state = self.KONIECGRY
+            return False
+
 
 
         # kliknięcie dla rzutu kością
@@ -288,6 +293,7 @@ class Game:
             pole.upgradeLevel = 0
         if z==3:
             self.state = self.KONIECGRY
+            return False
 
 
 
