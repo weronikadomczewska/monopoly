@@ -40,7 +40,9 @@ class Game:
     #TODO
     #akcja na polu szansa
     def chanceField(self, player):
-        pass
+        card = random.choice(self.cards)
+        self.card_effect(player, card[-2], card[-1])
+        return card[0]
 
     #akcja na polu więzienie
     def prisonField(self, player):
@@ -49,10 +51,16 @@ class Game:
     #TODO
     #akcja na polu specjalnym praktyka w Nokii (pole, którego nie można odkupić)
     def practiseField(self, player):
-        pass
+        if self.fields[player.position].owner == None:
+            player.money -= 45
+            self.fields[player.position].owner=player
+            player.ownedFields.append(self.fields[player.position])
+        else:
+            player.money -= 30
+            self.fields[player.position].owner.money += 30
 
     #akcja na polu tramwaj
-    def tramField(self, player, fieldNumber=10):
+    def tramField(self, player):
         self.state = self.WAITINGFORTRAM
         return False
 
@@ -89,7 +97,7 @@ class Game:
         self.fields.append(Field(name="Wstęp do programowania w języku C", color=(204, 229, 255), financial=(24, 8, 20, 60, 120,10))) # 2.3
         self.fields.append(Field(isSpecial=True,specialFunction=self.prisonField, imagePath="res/jail.png")) # Więzienie
         self.fields.append(Field(name="Podstawy elektroniki, elektrotechniki i miernictwa", color=(153, 0, 153), financial=(28, 10, 30, 90, 150, 20)))   # 3.1
-        self.fields.append(Field(name="Praktyka zawodowa w Nokii", isSpecial=True,specialFunction=self.practiseField, imagePath="res/noimage.png")) # X.1 CENA ZALEŻNA OD LICZBY WYRZ6UCONYCH OCZEK
+        self.fields.append(Field(name="Praktyka zawodowa w Nokii", isSpecial=True,specialFunction=self.practiseField,financial=(45,30,0,0,0,0), imagePath="res/noimage.png")) 
         self.fields.append(Field(name="Komunikacja człowiek-komputer", color=(153, 0, 153), financial=(28, 10, 30, 90, 150, 20))) # 3.2
         self.fields.append(Field(name="Systemy wbudowane", color=(153, 0, 153), financial=(32, 12, 36, 100, 180, 20))) # 3.3
         self.fields.append(Field(name="Rozwój systemu zapisów", color=(255, 128, 0), financial=(36, 14, 40, 110, 190, 20))) #4.1
@@ -103,7 +111,7 @@ class Game:
         self.fields.append(Field(name="Artificial Intelligence for Games", color=(255, 0, 0), financial=(48, 20, 60, 150, 220, 30))) # 5.3
         self.fields.append(Field(name="Kurs języka Java", color=(255, 255, 0), financial=(52, 22, 66, 160, 230, 30))) # 6.1
         self.fields.append(Field(name="Kurs języka Rust", color=(255, 255, 0), financial=(52, 22, 66, 160, 230, 30))) # 6.2
-        self.fields.append(Field(name="Praktyka zawodowa w Comarch", isSpecial=True,specialFunction=self.practiseField)) # X.2 CENA ZALEŻNA OD LICZBY WYRZUCONYCH OCZEK
+        self.fields.append(Field(name="Praktyka zawodowa w Comarch", isSpecial=True,specialFunction=self.practiseField,financial=(45,30,0,0,0,0)))
         self.fields.append(Field(name="Języki programowania", color=(255, 255, 0), financial=(56, 24, 72, 170, 240, 30))) # 6.3
         self.fields.append(Field(isSpecial=True,specialFunction=self.goToPrison, imagePath="res/gotojail.png")) # Idź do więzienia
         self.fields.append(Field(name="Analiza numeryczna", color=(0, 153, 0), financial=(60, 26, 78, 190, 255, 40))) # 7.1
