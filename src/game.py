@@ -1,6 +1,6 @@
 
 from field import Field
-from random import randint, random
+from random import randint, random, choice
 
 ''' klasa reprezentująca rozgrywkę '''
 
@@ -40,7 +40,7 @@ class Game:
     #TODO
     #akcja na polu szansa
     def chanceField(self, player):
-        card = random.choice(self.cards)
+        card = choice(self.cards)
         self.card_effect(player, card[-2], card[-1])
         return card[0]
 
@@ -427,8 +427,9 @@ class Game:
                 else:
                     # 3 dublety z rzędu
                     if p.diceroll == 3:
-                        self.goToPrison(p)
-                        self.zmiana_aktywnego_gracza()
+                        self.state = self.WAITINGFORDECISION
+                        self.fields[27].specialFunction(self,p)
+                        p.diceroll = 0
                         return (dice1, dice2, True)
                     else:
                         if pole<p.position:
