@@ -19,8 +19,15 @@ class UI:
         self.surface = pygame.display.set_mode((info.current_w - 300, info.current_h - 150), pygame.RESIZABLE)
 
         pygame.font.init()
-        self.fontBold = pygame.font.SysFont("Courier", 32, True)
-        self.font = pygame.font.SysFont("Courier", 32, False)
+        self.fontName = "Courier"
+
+        self.fontsBold = {
+            32: pygame.font.SysFont(self.fontName, 32, True)
+        }
+        self.fonts = {
+            32: pygame.font.SysFont(self.fontName, 32, False)
+        }
+
         self.timer = time.time()
         
         # wczytanie obrazków
@@ -51,6 +58,11 @@ class UI:
                 self.closed = True
 
             if event.type == pygame.VIDEORESIZE:
+                width, height = event.size
+                if width < 1280:
+                    pygame.display.set_mode((1280, pygame.display.get_window_size()[1]), pygame.RESIZABLE)
+                if height < 720:
+                    pygame.display.set_mode((pygame.display.get_window_size()[0], 720), pygame.RESIZABLE)
                 self.needRedraw = True
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -96,6 +108,11 @@ class UI:
                     pass
                 self.needRedraw = True
 
+        elif self.game.state == self.game.KONIECGRY:
+            if self.clicked == True:
+                self.game.game_over()
+                # TODO: zrób coś!
+
 
         # leniwe rysowanie interfejsu - tylko wtedy gdy jest potrzeba
         if self.needRedraw:
@@ -108,8 +125,27 @@ class UI:
         # czyszczenie
         self.clicked = False
 
-    def renderText(self, text, bold=True):
-        return self.fontBold.render(text, True, (0, 0, 0)) if bold else self.font.render(text, True, (0, 0, 0))
+    def renderText(self, text, bold=True, size=32, color=(0, 0, 0)):
+
+        font = None
+        if bold:
+            if size in self.fontsBold:
+                font = self.fontsBold[size]
+            else:
+                newFont = pygame.font.SysFont(self.fontName, size, True)
+                font = newFont
+                self.fontsBold[size] = newFont
+
+        else:
+            if size in self.fonts:
+                font = self.fonts[size]
+            else:
+                newFont = pygame.font.SysFont(self.fontName, size, False)
+                font = newFont
+                self.fonts[size] = newFont
+        
+        return font.render(text, True, color) if bold else font.render(text, True, color)
+        
 
     # tymczasowa (bardzo brzydka) implementacja rysowania planszy
     # TODO(Karol M.): napisać ten kod porządnie!
@@ -166,7 +202,7 @@ class UI:
         py = y + (cornerSize / 12)
         counter = 0
         for p in self.game.players:
-            if p.position == offset:
+            if p.position == offset and not p.bankrupt:
                 rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
                 pygame.draw.rect(self.surface, p.color, rect)
                 pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
@@ -245,7 +281,7 @@ class UI:
             px = x + (fieldWidth / 12) 
             py = y + (fieldWidth / 12) 
             for p in self.game.players:
-                if p.position == offset:
+                if p.position == offset and not p.bankrupt:
                     rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
                     pygame.draw.rect(self.surface, p.color, rect)
                     pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
@@ -264,7 +300,7 @@ class UI:
         py = y + (cornerSize / 12)
         counter = 0
         for p in self.game.players:
-            if p.position == offset:
+            if p.position == offset and not p.bankrupt:
                 rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
                 pygame.draw.rect(self.surface, p.color, rect)
                 pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
@@ -343,7 +379,7 @@ class UI:
             # gracze
             px = x + fieldHeight - (fieldHeight / 6)
             py = y + (fieldWidth / 12) 
-            for p in self.game.players:
+            for p in self.game.players and not p.bankrupt:
                 if p.position == offset:
                     rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
                     pygame.draw.rect(self.surface, p.color, rect)
@@ -362,7 +398,7 @@ class UI:
         py = y + (cornerSize / 12)
         counter = 0
         for p in self.game.players:
-            if p.position == offset:
+            if p.position == offset and not p.bankrupt:
                 rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
                 pygame.draw.rect(self.surface, p.color, rect)
                 pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
@@ -440,7 +476,7 @@ class UI:
             px = x + (fieldWidth / 12)
             py = y + fieldHeight - (fieldWidth / 4) 
             for p in self.game.players:
-                if p.position == offset:
+                if p.position == offset and not p.bankrupt:
                     rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
                     pygame.draw.rect(self.surface, p.color, rect)
                     pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
@@ -457,7 +493,7 @@ class UI:
         py = y + (cornerSize / 12)
         counter = 0
         for p in self.game.players:
-            if p.position == offset:
+            if p.position == offset and not p.bankrupt:
                 rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
                 pygame.draw.rect(self.surface, p.color, rect)
                 pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
@@ -537,7 +573,7 @@ class UI:
             px = x + (fieldWidth / 12)
             py = y + (fieldWidth / 12)
             for p in self.game.players:
-                if p.position == offset:
+                if p.position == offset and not p.bankrupt:
                     rect = pygame.Rect(px, py, fieldWidth / 5, fieldWidth / 5)
                     pygame.draw.rect(self.surface, p.color, rect)
                     pygame.draw.rect(self.surface, (0, 0, 0), rect, 1)
@@ -551,13 +587,17 @@ class UI:
         y = 10
         i = 0
         for p in self.game.players:
-            pygame.draw.circle(self.surface, p.color, (x + 8, y + 8), 8)
-            pygame.draw.circle(self.surface, (0, 0, 0), (x + 8, y + 8), 8, 2)
+            pygame.draw.circle(self.surface, p.color, (x + 16, y + 16), 16)
+            pygame.draw.circle(self.surface, (0, 0, 0), (x + 16, y + 16), 16, 2)
 
-            text = self.renderText(str(p.money) + " ECTS", (self.game.activePlayer == i))
-            scaleFactor = 16 / text.get_height()
-            text = pygame.transform.smoothscale(text, (int(text.get_width() * scaleFactor), 16))
-            self.surface.blit(text, (x + 20, y))
+            txt = " ECTS"
+            if p.jailed > 0 and not p.bankrupt:
+                txt += " (#)"
+            color = (0, 0, 0)
+            if p.bankrupt:
+                color = (128, 128, 128)
+            text = self.renderText(str(p.money) + txt, bold=(self.game.activePlayer == i), size=32, color=color)
+            self.surface.blit(text, (x + 40, y))
 
-            y += 20
+            y += 32
             i += 1
