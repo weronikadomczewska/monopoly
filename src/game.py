@@ -13,6 +13,7 @@ class Game:
     WAITINGFORPURCHASE = 5
     WAITINGFORREPURCHASE = 6
     WAITINGFORJAIL = 7
+    WAITINGFORTRAM = 8
 
     ''' 
     konstruktor gry
@@ -52,7 +53,17 @@ class Game:
 
     #akcja na polu tramwaj
     def tramField(self, player, fieldNumber=10):
-        player.position = fieldNumber
+        self.state = self.WAITINGFORTRAM
+        return False
+
+    #akcja tramwaju
+    def tram(self,position):
+        if self.fields(position).owner!= self.activePlayer and self.fields(position).owner!= None:
+            self.state = self.WAITINGFORTRAM
+            return 'Pole innego gracza. Nie można wejść na to pole!'
+        else:
+            self.go_to_field(position)
+
 
     #akcja na polu idź do więzienia
     def goToPrison(self, player):
