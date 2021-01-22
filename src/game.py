@@ -66,7 +66,7 @@ class Game:
 
     #akcja tramwaju
     def tram(self,position):
-        if self.fields[position].owner!= self.activePlayer and self.fields[position].owner!= None:
+        if self.fields[position].owner!= self.players[self.activePlayer] and self.fields[position].owner!= None:
             self.state = self.WAITINGFORTRAM
             return 'Pole innego gracza. Nie można wejść na to pole!'
         else:
@@ -494,6 +494,7 @@ class Game:
         if decision== 'Buy':
             p.money -= self.fields[p.position].getPurchaseCost()
             self.fields[p.position].owner = p
+            p.ownedFields.append(self.fields[p.position])
             self.zmiana_aktywnego_gracza()
         #upgrade
         elif decision == 'Upgrade':
