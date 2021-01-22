@@ -20,6 +20,7 @@ class Player:
         self.jailed = 0
         self.position = 0
         self.ownedFields = []
+        self.bankrupt = False
 
         self.riskLevel = random.random()
         self.aggressionLevel = random.random()
