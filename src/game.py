@@ -14,6 +14,7 @@ class Game:
     WAITINGFORREPURCHASE = 6
     WAITINGFORJAIL = 7
     WAITINGFORTRAM = 8
+    KONIECGRY = 9
 
     ''' 
     konstruktor gry
@@ -257,13 +258,28 @@ class Game:
     def zmiana_aktywnego_gracza(self):
         self.activePlayer +=1
         self.activePlayer %=len(self.players)
+        if self.players[self.activePlayer].bankrupt==True:
+            self.zmiana_aktywnego_gracza()
         self.state = self.WAITINGFORDICE
         self.players[self.activePlayer].diceroll=0
+
+    #Bankrut:
+    def bankrut(self,player):
+        player.bankrupt= True
+        z=0
+        for gracz in self.players:
+            if gracz.bankrupt == True:
+                z+=1
+        if z==3:
+            self.state = self.KONIECGRY
+
+
 
     def czy_wszyscy_gracze_jeszcze_graja(self):
         for i in self.players:
             if i.money < 0:
-                raise Exception("Game:input dice:Bot: coś jest nie tak, Bankrutów jeszcze nie ma!")
+                self.bankrut(i)
+                #raise Exception("Game:input dice:Bot: coś jest nie tak, Bankrutów jeszcze nie ma!")
 
     def go_to_field(self,pole):
         # rzut kością, przesunięcie gracza, odpalenie funkcji pola na które stanął
@@ -297,7 +313,8 @@ class Game:
                 p.money -= oplata
                 self.fields[p.position].owner.money += oplata
                 if p.money < 0:
-                    raise Exception("Game:input dice:Bot: coś jest nie tak, Bankrutów jeszcze nie ma!")
+                    self.bankrut(p)
+                   # raise Exception("Game:input dice:Bot: coś jest nie tak, Bankrutów jeszcze nie ma!")
                     # odkupowanie pola od gracza
                 elif p.money < self.fields[p.position].getRepurchaseCost():
                     self.zmiana_aktywnego_gracza()
@@ -362,7 +379,8 @@ class Game:
                 self.fields[p.position].owner.money += oplata
 
                 if p.money < 0:
-                    raise Exception("Game:input dice: coś jest nie tak, Bankrutów jeszcze nie ma!")
+                    self.bankrut(p)
+                    #raise Exception("Game:input dice: coś jest nie tak, Bankrutów jeszcze nie ma!")
                     # odkupowanie pola od gracza
 
                 elif p.money < self.fields[p.position].getRepurchaseCost():
@@ -510,6 +528,8 @@ class Game:
             owner = self.fields[p.position].owner
             self.fields[p.position].upgradeLevel = 0
             self.fields[p.position].owner = p
+            owner.ownedFields.remove(self.fields[p.position])
+            p.ownedFields.append(self.fields[p.position])
             self.zmiana_aktywnego_gracza()
 
         #akceptacja
