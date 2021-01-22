@@ -263,7 +263,7 @@ class Game:
         for player in self.players:
             wartość_skumulowana=0
             for pole in player.ownedFields:
-                wartość_skumulowana+=pole.financial[0]+pole.upgradeLevel*pole.financial[6]
+                wartość_skumulowana+=pole.financial[0]+pole.upgradeLevel*pole.financial[5]
             tabela.append([player.money,wartość_skumulowana,player.total_jailed])
         statistics(tabela)
         return False
