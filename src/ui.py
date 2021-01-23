@@ -350,11 +350,21 @@ class UI:
             self.surface.blit(text, (lay[0] + width / 2 - text.get_width() / 2, lay[1] + height / 2 - text.get_height() / 2))
 
         if self.stateTextSplit:
-            length = len(self.stateText)
-            pos = length // 2
-            while self.stateText[pos] != ' ':
-                pos += 1
-            stateText = [self.stateText[:pos], self.stateText[pos + 1:]]
+            stateText = self.stateText.split()
+            ret = []
+            length = len(stateText)
+            off = 0
+            curr = []
+            while off < length:
+                curr.append(stateText[off])
+                if len(" ".join(curr)) > 30:
+                    ret.append(" ".join(curr))
+                    curr = []
+                off += 1
+            if len(curr) > 0:
+                ret.append(" ".join(curr))
+            stateText = ret
+            
         else:
             stateText = [self.stateText]
 
@@ -491,6 +501,11 @@ class UI:
                 priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
                 self.surface.blit(priceTag, (x + (fieldWidth / 2) - (priceTag.get_width() / 2), y + (4 * fieldHeight / 5)))
 
+            else:
+                image = self.images[self.game.fields[offset].imagePath]
+                image = pygame.transform.smoothscale(image, (int(fieldWidth - 5), int(fieldWidth - 5)))
+                self.surface.blit(image, (x + fieldWidth / 2 - image.get_width() / 2, y + fieldHeight / 2 - image.get_height() / 2))
+
             # gracze
             px = x + (fieldWidth / 12) 
             py = y + (fieldWidth / 12) 
@@ -540,12 +555,6 @@ class UI:
             pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
 
             self.fields.append((x, y, x + fieldHeight, y + fieldWidth))
-
-            if offset == 11 and self.game.fields[11].owner != None:
-                off = fieldHeight / 5
-                rect = pygame.Rect(x, y, off, off)
-                pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
-                pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
 
             if not self.game.fields[offset].isSpecial:
                 
@@ -601,6 +610,17 @@ class UI:
                 priceTag = pygame.transform.rotate(priceTag, 270)
                 self.surface.blit(priceTag, (x, y + (fieldWidth / 2) - (priceTag.get_width() / 2)))
 
+            else:
+                image = self.images[self.game.fields[offset].imagePath]
+                image = pygame.transform.smoothscale(image, (int(fieldWidth - 5), int(fieldWidth - 5)))
+                self.surface.blit(image, (x + fieldHeight / 2 - image.get_height() / 2, y + fieldWidth / 2 - image.get_width() / 2))
+
+            if offset == 11 and self.game.fields[11].owner != None:
+                off = fieldHeight / 5
+                rect = pygame.Rect(x, y, off, off)
+                pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
+                pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
+
             # gracze
             px = x + fieldHeight - (fieldHeight / 6)
             py = y + (fieldWidth / 12) 
@@ -649,12 +669,6 @@ class UI:
             pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
 
             self.fields.append((x, y, x + fieldWidth, y + fieldHeight))
-            
-            if offset == 25 and self.game.fields[25].owner != None:
-                off = fieldHeight / 5
-                rect = pygame.Rect(x + fieldWidth - off, y, off, off)
-                pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
-                pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
 
             if not self.game.fields[offset].isSpecial:
 
@@ -708,6 +722,11 @@ class UI:
                 priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
                 self.surface.blit(priceTag, (x + (fieldWidth / 2) - (priceTag.get_width() / 2), y))
 
+            else:
+                image = self.images[self.game.fields[offset].imagePath]
+                image = pygame.transform.smoothscale(image, (int(fieldWidth - 5), int(fieldWidth - 5)))
+                self.surface.blit(image, (x + fieldWidth / 2 - image.get_width() / 2, y + fieldHeight / 2 - image.get_height() / 2))
+
             # gracze
             px = x + (fieldWidth / 12)
             py = y + fieldHeight - (fieldWidth / 4) 
@@ -720,6 +739,12 @@ class UI:
 
             x += fieldWidth
             offset += 1
+
+        if offset == 25 and self.game.fields[25].owner != None:
+            off = fieldHeight / 5
+            rect = pygame.Rect(x + fieldWidth - off, y, off, off)
+            pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
+            pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
 
         rect = pygame.Rect(x, y, cornerSize, cornerSize)
         pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
@@ -807,6 +832,11 @@ class UI:
                 priceTag = pygame.transform.smoothscale(priceTag, (int(priceTag.get_width() * scaleFactor), int(fieldHeight / 5)))
                 priceTag = pygame.transform.rotate(priceTag, 90)
                 self.surface.blit(priceTag, (x + (4 * fieldHeight / 5), y + (fieldWidth / 2) - (priceTag.get_width() / 2)))
+
+            else:
+                image = self.images[self.game.fields[offset].imagePath]
+                image = pygame.transform.smoothscale(image, (int(fieldWidth - 5), int(fieldWidth - 5)))
+                self.surface.blit(image, (x + fieldHeight / 2 - image.get_height() / 2, y + fieldWidth / 2 - image.get_width() / 2))
 
             # gracze
             px = x + (fieldWidth / 12)
