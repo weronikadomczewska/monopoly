@@ -68,7 +68,10 @@ class Game:
         else:
             player.money -= 20
             self.fields[player.position].owner.money += 20
-            self.specialText = "Praktyki są już zajęte, tracisz punkty"
+            if self.fields[player.position].owner != player:
+                self.specialText = "Praktyki są już zajęte, tracisz 20 punktów"
+            else:
+                self.specialText = "Przykładnie przybywasz na swoje praktyki"
 
     #akcja na polu tramwaj
     def tramField(self, player):
