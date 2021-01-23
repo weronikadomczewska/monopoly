@@ -18,21 +18,21 @@ def statistics(data):
     if len(max_ects) == 3:
         max_ects.append("geniusz!")
     else:
-        max_ects[3] += ", geniusz!"
+        max_ects[3] += "\n geniusz!"
 
     #szukam najwięcej przedmiotów
     max_p = max(data,key=lambda x:x[1])
     if len(max_p) == 3:
         max_p.append("pracoholik")
     else:
-        max_p[3] += ", pracoholik"
+        max_p[3] += "\n pracoholik"
 
     #szukam najwięcej napraw
     max_np= max(data,key=lambda x:x[2])
     if len(max_np) == 3:
         max_np.append("(nie)złota rączka!")
     else:
-        max_np[3] += ", (nie)złota rączka!"
+        max_np[3] += "\n (nie)złota rączka!"
 
     for p in data:
         if len(p) < 4:
@@ -74,7 +74,7 @@ def statistics(data):
     ax.set_title('Koniec gry!', fontsize=30)
     table.scale(1, 4)
     table.auto_set_font_size(False)
-    table.set_fontsize(15)
+    table.set_fontsize(12)
     plt.tight_layout()
 
     # zapis do pliku - odkomentuj!
