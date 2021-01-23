@@ -1,17 +1,24 @@
 import pygame
 from game import Game
+from player import Player
 import time
 
 class UI:
 
-    def __init__(self, game):
-        self.game = game
+    PREGAME = 0
+    INGAME = 1
+    POSTGAME = 2
+
+    def __init__(self):
+        self.game = None
         self.closed = False
         self.needRedraw = True
         self.clicked = False
         self.drawDice = False
         self.fields = []
         self.fieldName = ""
+        self.state = self.PREGAME
+        self.botGame = False
 
         pygame.display.init()
         info = pygame.display.Info()
@@ -33,11 +40,6 @@ class UI:
         
         # wczytanie obrazków
         self.images = {}
-        for f in self.game.fields:
-            if f.isSpecial:
-                if f.imagePath not in self.images:
-                    self.images[f.imagePath] = pygame.image.load(f.imagePath)
-        
         for i in range(1, 7):
             self.images[f"dice{i}"] = pygame.image.load(f"res/dice{i}.png")
 
@@ -53,86 +55,219 @@ class UI:
 
     def gameTick(self):
 
-        # przetworzenie zdarzeń okna gry
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.closed = True
+        if self.state == self.PREGAME:
 
-            if event.type == pygame.VIDEORESIZE:
-                width, height = event.size
-                if width < 1280:
-                    pygame.display.set_mode((1280, pygame.display.get_window_size()[1]), pygame.RESIZABLE)
-                if height < 720:
-                    pygame.display.set_mode((pygame.display.get_window_size()[0], 720), pygame.RESIZABLE)
+            players = -1
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.closed = True
+
+                if event.type == pygame.VIDEORESIZE:
+                    width, height = event.size
+                    if width < 1280:
+                        pygame.display.set_mode((1280, pygame.display.get_window_size()[1]), pygame.RESIZABLE)
+                    if height < 720:
+                        pygame.display.set_mode((pygame.display.get_window_size()[0], 720), pygame.RESIZABLE)
+                    self.needRedraw = True
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_0:
+                        players = 0
+                    elif event.key == pygame.K_1:
+                        players = 1
+                    elif event.key == pygame.K_2:
+                        players = 2
+                    elif event.key == pygame.K_3:
+                        players = 3
+                    elif event.key == pygame.K_4:
+                        players = 4
+
+            if self.needRedraw:
+                self.surface.fill((255, 255, 255))
+                self.drawStartScreen()
+                pygame.display.update()
+                self.needRedraw = False
+
+            if players != -1:
+                self.game = Game()
+                if players == 0:
+                    self.botGame = True
+                    player1 = Player(color=(255, 0, 0), isBot=True)
+                    player2 = Player(color=(0, 255, 0), isBot=True)
+                    player3 = Player(color=(0, 0, 255), isBot=True)
+                    player4 = Player(color=(255, 255, 0), isBot=True)
+
+                    self.game.addPlayer(player1)
+                    self.game.addPlayer(player2)
+                    self.game.addPlayer(player3)
+                    self.game.addPlayer(player4)
+
+                elif players == 1:
+                    player1 = Player(color=(255, 0, 0))
+                    player2 = Player(color=(0, 255, 0), isBot=True)
+                    player3 = Player(color=(0, 0, 255), isBot=True)
+                    player4 = Player(color=(255, 255, 0), isBot=True)
+
+                    self.game.addPlayer(player1)
+                    self.game.addPlayer(player2)
+                    self.game.addPlayer(player3)
+                    self.game.addPlayer(player4)
+
+                elif players == 2:
+                    player1 = Player(color=(255, 0, 0))
+                    player2 = Player(color=(0, 255, 0))
+                    player3 = Player(color=(0, 0, 255), isBot=True)
+                    player4 = Player(color=(255, 255, 0), isBot=True)
+
+                    self.game.addPlayer(player1)
+                    self.game.addPlayer(player2)
+                    self.game.addPlayer(player3)
+                    self.game.addPlayer(player4)
+
+                elif players == 3:
+                    player1 = Player(color=(255, 0, 0))
+                    player2 = Player(color=(0, 255, 0))
+                    player3 = Player(color=(0, 0, 255))
+                    player4 = Player(color=(255, 255, 0), isBot=True)
+
+                    self.game.addPlayer(player1)
+                    self.game.addPlayer(player2)
+                    self.game.addPlayer(player3)
+                    self.game.addPlayer(player4)
+
+                elif players == 4:
+                    player1 = Player(color=(255, 0, 0))
+                    player2 = Player(color=(0, 255, 0))
+                    player3 = Player(color=(0, 0, 255))
+                    player4 = Player(color=(255, 255, 0))
+
+                    self.game.addPlayer(player1)
+                    self.game.addPlayer(player2)
+                    self.game.addPlayer(player3)
+                    self.game.addPlayer(player4)
+
+                for f in self.game.fields:
+                    if f.isSpecial:
+                        if f.imagePath not in self.images:
+                            self.images[f.imagePath] = pygame.image.load(f.imagePath)
+
+                self.state = self.INGAME
                 self.needRedraw = True
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.clicked = True
-
-            if event.type == pygame.MOUSEMOTION:
-                f = self.getField(pygame.mouse.get_pos())
-                if f != -1:
-                    self.fieldName = self.game.fields[f].name
-                else:
-                    self.fieldName = ""
-                self.needRedraw = True
-
-        # obsługa stanów gry
-        if self.game.state == self.game.WAITINGFORDICE:
-            if self.clicked == True:
-                self.drawDice = self.game.inputDice()
-                self.needRedraw = True
-
-        elif self.game.state == self.game.WAITINGFORDECISION:
-            if self.clicked == True:
-                self.game.inputDecision("Yes")
-                self.needRedraw = True
-
-        elif self.game.state == self.game.WAITINGFORPURCHASE:
-            if self.clicked == True:
-                self.game.inputDecision("Buy")
-                self.needRedraw = True
-
-        elif self.game.state == self.game.WAITINGFORREPURCHASE:
-            if self.clicked == True:
-                self.game.inputDecision("Repurchase")
-                self.needRedraw = True
-
-        elif self.game.state == self.game.WAITINGFORUPGRADE:
-            if self.clicked == True:
-                self.game.inputDecision("Upgrade")
-                self.needRedraw = True
-
-        elif self.game.state == self.game.WAITINGFORJAIL:
-            if self.clicked == True:
-                self.game.inputDecision("Bribe")
-                self.needRedraw = True
-
-        elif self.game.state == self.game.WAITINGFORTRAM:
-            if self.clicked == True:
-                f = self.getField(pygame.mouse.get_pos())
-                if f != -1:
-                    self.game.tram(f)
-                else:
-                    pass # TODO: klikaj w pole!
-                self.needRedraw = True
-
-        # self.winner przechowuje wygranego
-        elif self.game.state == self.game.KONIECGRY:
-            if self.clicked == True:
-                self.game.game_over()
-                # TODO: zrób coś!
+                return
 
 
-        # leniwe rysowanie interfejsu - tylko wtedy gdy jest potrzeba
-        if self.needRedraw:
-            self.surface.fill((255, 255, 255)) # czyszczenie ekranu
-            self.drawUI()
-            self.needRedraw = False
-            pygame.display.update() # pokazanie narysowanego interfejsu
         
-        # czyszczenie
-        self.clicked = False
+        elif self.state == self.INGAME:
+            # przetworzenie zdarzeń okna gry
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.closed = True
+
+                if event.type == pygame.VIDEORESIZE:
+                    width, height = event.size
+                    if width < 1280:
+                        pygame.display.set_mode((1280, pygame.display.get_window_size()[1]), pygame.RESIZABLE)
+                    if height < 720:
+                        pygame.display.set_mode((pygame.display.get_window_size()[0], 720), pygame.RESIZABLE)
+                    self.needRedraw = True
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.clicked = True
+
+                if event.type == pygame.MOUSEMOTION:
+                    f = self.getField(pygame.mouse.get_pos())
+                    if f != -1:
+                        self.fieldName = self.game.fields[f].name
+                    else:
+                        self.fieldName = ""
+                    self.needRedraw = True
+
+            # obsługa stanów gry
+            if self.game.state == self.game.WAITINGFORDICE:
+                if self.clicked == True:
+                    self.drawDice = self.game.inputDice()
+                    self.needRedraw = True
+
+            elif self.game.state == self.game.WAITINGFORDECISION:
+                if self.clicked == True:
+                    self.game.inputDecision("Yes")
+                    self.needRedraw = True
+
+            elif self.game.state == self.game.WAITINGFORPURCHASE:
+                if self.clicked == True:
+                    self.game.inputDecision("Buy")
+                    self.needRedraw = True
+
+            elif self.game.state == self.game.WAITINGFORREPURCHASE:
+                if self.clicked == True:
+                    self.game.inputDecision("Repurchase")
+                    self.needRedraw = True
+
+            elif self.game.state == self.game.WAITINGFORUPGRADE:
+                if self.clicked == True:
+                    self.game.inputDecision("Upgrade")
+                    self.needRedraw = True
+
+            elif self.game.state == self.game.WAITINGFORJAIL:
+                if self.clicked == True:
+                    self.game.inputDecision("Bribe")
+                    self.needRedraw = True
+
+            elif self.game.state == self.game.WAITINGFORTRAM:
+                if self.clicked == True:
+                    f = self.getField(pygame.mouse.get_pos())
+                    if f != -1:
+                        self.game.tram(f)
+                    else:
+                        pass # TODO: klikaj w pole!
+                    self.needRedraw = True
+
+            # self.winner przechowuje wygranego
+            elif self.game.state == self.game.KONIECGRY:
+                if self.clicked == True:
+                    self.game.game_over()
+                    self.state = self.POSTGAME
+                    self.needRedraw = True
+                    return
+
+
+            # leniwe rysowanie interfejsu - tylko wtedy gdy jest potrzeba
+            if self.needRedraw:
+                self.surface.fill((255, 255, 255)) # czyszczenie ekranu
+                self.drawUI()
+                self.needRedraw = False
+                pygame.display.update() # pokazanie narysowanego interfejsu
+            
+            # czyszczenie
+            self.clicked = False
+
+        elif self.state == self.POSTGAME:
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.closed = True
+
+                if event.type == pygame.VIDEORESIZE:
+                    width, height = event.size
+                    if width < 1280:
+                        pygame.display.set_mode((1280, pygame.display.get_window_size()[1]), pygame.RESIZABLE)
+                    if height < 720:
+                        pygame.display.set_mode((pygame.display.get_window_size()[0], 720), pygame.RESIZABLE)
+                    self.needRedraw = True
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.closed = True
+
+            if self.needRedraw:
+                self.surface.fill((255, 255, 255))
+                self.drawStatsScreen()
+                pygame.display.update()
+                self.needRedraw = False
+
+        else:
+            raise Exception("nieznany stan UI")
 
     def renderText(self, text, bold=True, size=32, color=(0, 0, 0)):
 
@@ -155,7 +290,6 @@ class UI:
         
         return font.render(text, True, color) if bold else font.render(text, True, color)
         
-
     # rysowanie interfejsu
     def drawUI(self):
 
@@ -622,14 +756,16 @@ class UI:
 
             # środek planszy
 
-
     def drawPlayerInfo(self, x, y, width):
         i = 0
         for p in self.game.players:
             pygame.draw.circle(self.surface, p.color, (x + 12, y + 12), 12)
             pygame.draw.circle(self.surface, (0, 0, 0), (x + 12, y + 12), 12, 2)
 
-            txt = " ECTS"
+            txt = ""
+            if p.isBot:
+                txt += "(B)"
+            txt += " ECTS"
             if p.jailed > 0 and not p.bankrupt:
                 txt += " (#)"
             if self.game.activePlayer == i:
@@ -642,3 +778,39 @@ class UI:
 
             y += 26
             i += 1
+
+    def drawStatsScreen(self):
+        img = pygame.image.load("res/table.png")
+
+        # być może nie ma obrazka?
+        if img:
+            size = img.get_size()
+            surfSize = self.surface.get_size()
+            x = surfSize[0] / 2 - size[0] / 2
+            y = surfSize[1] / 2 - size[1] / 2
+            self.surface.blit(img, (x, y))
+        
+        text = self.renderText("Kliknij ESC, aby zakończyć program", size=24)
+        x = surfSize[0] / 2 - text.get_width() / 2
+        y = surfSize[1] - 36
+        self.surface.blit(text, (x, y))
+    
+    def drawStartScreen(self):
+
+        surfSize = self.surface.get_size()
+
+        text = self.renderText("Monopoly UWR", size=72)
+        x = surfSize[0] / 2 - text.get_width() / 2
+        y = surfSize[1] / 3
+        self.surface.blit(text, (x, y))
+
+        y += 90
+        text = self.renderText("Wciśnij 0-4 aby wybrać liczbę \"prawdziwych\" graczy", size=32)
+        x = surfSize[0] / 2 - text.get_width() / 2
+        self.surface.blit(text, (x, y))
+
+        y += 36
+        text = self.renderText("Reszta graczy będzie botami", size=32)
+        x = surfSize[0] / 2 - text.get_width() / 2
+        self.surface.blit(text, (x, y))
+        

@@ -382,7 +382,7 @@ class Game:
             else:
                 raise Exception("Game:go to:Bot: coś jest nie tak, Gdzie ty jesteś na plansz?",
                                 str(p.position))
-            raise Exception("Game: go to:Bot: coś jest nie tak, Gdzie ty jesteś na plansz?",str(p.position))
+            # raise Exception("Game: go to:Bot: coś jest nie tak, Gdzie ty jesteś na plansz?",str(p.position))
 
 
         # -------------------------------------------------------------------------------------------------------------------
