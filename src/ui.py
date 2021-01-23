@@ -222,7 +222,7 @@ class UI:
 
             elif self.game.state == self.game.WAITINGFORUPGRADE:
                 self.setButtons({0: ("Napisz", "Upgrade"), 1: ("Nie pisz", "Yes")})
-                self.stateText = "Czy chcesz napisać pracę?"
+                self.stateText = "Czy chcesz napisać pracę? (Koszt: " + str(self.game.fields[self.game.players[self.game.activePlayer].position].getUpgradeCost()) + " ECTS)"
                 if self.clicked == True:
                     self.runButtons()
                     self.needRedraw = True
@@ -541,6 +541,12 @@ class UI:
 
             self.fields.append((x, y, x + fieldHeight, y + fieldWidth))
 
+            if offset == 11 and self.game.fields[11].owner != None:
+                off = fieldHeight / 5
+                rect = pygame.Rect(x, y, off, off)
+                pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
+                pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
+
             if not self.game.fields[offset].isSpecial:
                 
                 if self.game.fields[offset].owner != None:
@@ -643,6 +649,12 @@ class UI:
             pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
 
             self.fields.append((x, y, x + fieldWidth, y + fieldHeight))
+            
+            if offset == 25 and self.game.fields[25].owner != None:
+                off = fieldHeight / 5
+                rect = pygame.Rect(x + fieldWidth - off, y, off, off)
+                pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
+                pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
 
             if not self.game.fields[offset].isSpecial:
 
