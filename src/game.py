@@ -66,8 +66,8 @@ class Game:
             player.ownedFields.append(self.fields[player.position])
             self.specialText = "Zostajesz zapisany na praktyki!"
         else:
-            player.money -= 30
-            self.fields[player.position].owner.money += 30
+            player.money -= 20
+            self.fields[player.position].owner.money += 20
             self.specialText = "Praktyki są już zajęte, tracisz punkty"
 
     #akcja na polu tramwaj
