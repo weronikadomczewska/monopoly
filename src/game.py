@@ -303,8 +303,9 @@ class Game:
         self.doktorat()
         self.activePlayer +=1
         self.activePlayer %=len(self.players)
-        if self.players[self.activePlayer].bankrupt==True:
-            self.zmiana_aktywnego_gracza()
+        while self.players[self.activePlayer].bankrupt==True:
+            self.activePlayer += 1
+            self.activePlayer %= len(self.players)
         self.state = self.WAITINGFORDICE
         self.players[self.activePlayer].diceroll=0
         return False
