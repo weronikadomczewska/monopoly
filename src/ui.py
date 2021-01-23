@@ -732,6 +732,12 @@ class UI:
                 image = pygame.transform.smoothscale(image, (int(fieldWidth - 5), int(fieldWidth - 5)))
                 self.surface.blit(image, (x + fieldWidth / 2 - image.get_width() / 2, y + fieldHeight / 2 - image.get_height() / 2))
 
+            if offset == 25 and self.game.fields[25].owner != None:
+                off = fieldHeight / 5
+                rect = pygame.Rect(x + fieldWidth - off, y, off, off)
+                pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
+                pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
+
             # gracze
             px = x + (fieldWidth / 12)
             py = y + fieldHeight - (fieldWidth / 4) 
@@ -745,11 +751,6 @@ class UI:
             x += fieldWidth
             offset += 1
 
-        if offset == 25 and self.game.fields[25].owner != None:
-            off = fieldHeight / 5
-            rect = pygame.Rect(x + fieldWidth - off, y, off, off)
-            pygame.draw.rect(self.surface, self.game.fields[offset].owner.color, rect)
-            pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
 
         rect = pygame.Rect(x, y, cornerSize, cornerSize)
         pygame.draw.rect(self.surface, (0, 0, 0), rect, borderWidth)
