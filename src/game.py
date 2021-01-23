@@ -307,20 +307,21 @@ class Game:
             self.zmiana_aktywnego_gracza()
         self.state = self.WAITINGFORDICE
         self.players[self.activePlayer].diceroll=0
+        return False
 
     #Bankrut:
     def bankrut(self,player):
         player.bankrupt= True
         player.money = 0
-        z=0
+        number_of_bunkruts=0
         for gracz in self.players:
             if gracz.bankrupt == True:
-                z+=1
+                number_of_bunkruts+=1
         for pole in player.ownedFields:
             pole.owner=None
             pole.upgradeLevel = 0
         player.ownedFields=[]
-        if z==3:
+        if number_of_bunkruts==3:
             self.state = self.KONIECGRY
             for gracz in self.players:
                 if gracz.bankrupt == False:
