@@ -191,8 +191,13 @@ class UI:
 
             # obsługa stanów gry
             if self.game.state == self.game.WAITINGFORDICE:
-                self.setButtons({0: ("Rzuć kostką", self.rollDice)})
-                self.stateText = "Kliknij w przycisk, aby rzucić kością"
+
+                if self.game.players[self.game.activePlayer].isBot:
+                    self.setButtons({0: ("Wykonaj ruch", self.rollDice)})
+                    self.stateText = "Kliknij w przycisk, aby wykonać ruch bota"
+                else:
+                    self.setButtons({0: ("Rzuć kostką", self.rollDice)})
+                    self.stateText = "Kliknij w przycisk, aby rzucić kością"
                 if self.clicked == True:
                     self.runButtons()
                     self.needRedraw = True
