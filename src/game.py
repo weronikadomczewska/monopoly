@@ -28,6 +28,7 @@ class Game:
         self.state = self.WAITINGFORDICE
         self.activePlayer = 0
         self.winner = None
+        self.bankrutPlayers=0
     
     '''
     funkcja inicjalizująca planszę, tworzy wszystkie pola i dodaje je do listy self.fields
@@ -145,22 +146,6 @@ class Game:
         self.fields.append(Field(name="Mały grzyb", isSpecial=True,specialFunction=self.littleMushroom, imagePath="res/noimage.png")) # Grzyb mały
         self.fields.append(Field(name="Logika dla informatyków", color=(3, 177, 252), financial=(80, 40, 120, 280, 400, 40))) # 8.1
 
-        ''' Testowy algorytm Karola, wraz z dodaniem prawdziwych pól przestanie być on potrzebny
-        for i in range(36):
-            # color = (255, 56, 152)
-            color = (randint(0, 255), randint(0, 255), randint(0, 255))
-            # isSpecial = False if random() > 0.25 else True
-            if i == 0:
-                self.fields.append(Field(color=color, isSpecial=True, imagePath="res/start.png"))
-            elif i == 9:
-                self.fields.append(Field(color=color, isSpecial=True, imagePath="res/jail.png"))
-            elif i == 18:
-                self.fields.append(Field(color=color, isSpecial=True, imagePath="res/tram.png"))
-            elif i == 27:
-                self.fields.append(Field(color=color, isSpecial=True, imagePath="res/gotojail.png"))
-            else:
-                self.fields.append(Field(color=color))
-        '''
 
     # add > zmiana poziomu pieniędzy gracza
     # get-from-all > otrzymujesz n pieniędzy od wszystkich graczy
@@ -260,21 +245,7 @@ class Game:
             self.players.append(player)
         else:
             raise Exception("Game:addPlayer: coś jest nie tak, próbowano dodać za dużo graczy!")
-    """# funkcja do testowania interfejsu
-    def takeAction(self):
-        for p in self.players:
-            p.position += randint(1, 12)
-            if p.position > 35:
-                p.position %= 36
 
-            if self.fields[p.position].owner == None and not self.fields[p.position].isSpecial:
-                if random() < 0.05:
-                    self.fields[p.position].owner = p
-                    p.ownedFields.append(self.fields[p.position])
-
-            elif self.fields[p.position].owner == p and self.fields[p.position].upgradeLevel < 3:
-                if random() < 0.20:
-                    self.fields[p.position].upgradeLevel += 1"""
     def game_over(self):
         tabela=[]
         for player in self.players:
@@ -312,17 +283,14 @@ class Game:
 
     #Bankrut:
     def bankrut(self,player):
-        player.bankrupt= True
+        player.bankrupt = True
         player.money = 0
-        number_of_bunkruts=0
-        for gracz in self.players:
-            if gracz.bankrupt == True:
-                number_of_bunkruts+=1
+        self.bankrutPlayers+=1
         for pole in player.ownedFields:
             pole.owner=None
             pole.upgradeLevel = 0
         player.ownedFields=[]
-        if number_of_bunkruts==3:
+        if self.bankrutPlayers==3:
             self.state = self.KONIECGRY
             for gracz in self.players:
                 if gracz.bankrupt == False:
@@ -358,7 +326,7 @@ class Game:
             # nie zajęte pole
             elif self.fields[p.position].owner == None:
                 if p.money >= self.fields[p.position].getPurchaseCost():
-                    dec = p.botDecidePurchase(self.fields[p.position])  # argumenty???????
+                    dec = p.botDecidePurchase(self.fields[p.position])
                     if (dec == True):
                         p.money -= self.fields[p.position].getPurchaseCost()
                         self.fields[p.position].owner = p
@@ -380,7 +348,7 @@ class Game:
                 elif p.money < self.fields[p.position].getRepurchaseCost():
                     self.zmiana_aktywnego_gracza()
                 else:
-                    dec = p.botDecideRepurchase(self.fields[p.position])  # argumenty???????
+                    dec = p.botDecideRepurchase(self.fields[p.position])
                     if (dec == True):
                         p.money -= self.fields[p.position].getRepurchaseCost()
                         owner = self.fields[p.position].owner
@@ -433,12 +401,10 @@ class Game:
                     self.state = self.WAITINGFORPURCHASE
                     p.diceroll = 0
                     return False
-                    # wyświetlanie 'nie stać cię na zakup'
                 else:
                     self.zmiana_aktywnego_gracza()
 
             elif self.fields[p.position].owner != p:
-                # jakaś animacja albo zanznaczenie przekazania piniędzy?
                 oplata = self.fields[p.position].getFeeValue()
                 p.money -= oplata
                 self.fields[p.position].owner.money += oplata
@@ -605,7 +571,7 @@ class Game:
 
         #wyjście z więzienia
         elif decision == 'Bribe':
-            p.money-= 30 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!kwota?
+            p.money-= 30
             p.jailed=0
             self.state = self.WAITINGFORDICE
         #brake out
