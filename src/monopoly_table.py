@@ -57,7 +57,7 @@ def statistics(data):
     # print(rows)
 
     #kolory graczy
-    player_colors = ["yellow", "green", "lightblue", "red"]
+    player_colors = ["red", "green", "lightblue", "yellow"]
 
     table = ax.table( 
         cellText=data, 
