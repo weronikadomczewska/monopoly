@@ -61,7 +61,7 @@ class Player:
 
     #True - wykupuje się
     # False - rzuca dalej kośćmi        
-    def botDecideJail(self, field):
+    def botDecideJail(self):
         aggression = self.aggressionLevel
         ownedMoney = self.money
 

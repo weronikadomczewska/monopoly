@@ -269,10 +269,10 @@ class Game:
     def game_over(self):
         tabela=[]
         for player in self.players:
-            wartość_skumulowana=0
+            wartosc_skumulowana=0
             for pole in player.ownedFields:
-                wartość_skumulowana+=pole.financial[0]+pole.upgradeLevel*pole.financial[5]
-            tabela.append([player.money,wartość_skumulowana,player.total_jailed])
+                wartosc_skumulowana+=pole.financial[0]+pole.upgradeLevel*pole.financial[5]
+            tabela.append([player.money,wartosc_skumulowana,player.total_jailed])
         statistics(tabela)
         return False
 
@@ -351,6 +351,7 @@ class Game:
                     if (dec == True):
                         p.money -= self.fields[p.position].getPurchaseCost()
                         self.fields[p.position].owner = p
+                        p.ownedFields.append(self.fields[p.position])
                     self.zmiana_aktywnego_gracza()
                     # wyświetlanie 'nie stać cię na zakup'
                 else:
@@ -371,8 +372,11 @@ class Game:
                     dec = p.botDecideRepurchase(self.fields[p.position])  # argumenty???????
                     if (dec == True):
                         p.money -= self.fields[p.position].getRepurchaseCost()
+                        owner = self.fields[p.position].owner
                         self.fields[p.position].upgradeLevel = 0
                         self.fields[p.position].owner = p
+                        owner.ownedFields.remove(self.fields[p.position])
+                        p.ownedFields.append(self.fields[p.position])
                     self.zmiana_aktywnego_gracza()
             # Upgrade pola
             elif self.fields[p.position].owner == p:
@@ -497,7 +501,7 @@ class Game:
                     # 3 dublety z rzędu
                     if p.diceroll == 3:
                         self.state = self.WAITINGFORDECISION
-                        self.fields[27].specialFunction(self,p)
+                        self.fields[27].specialFunction(p)
                         p.diceroll = 0
                         return (dice1, dice2, True)
                     else:
