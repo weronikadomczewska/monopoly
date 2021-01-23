@@ -18,7 +18,6 @@ class UI:
         self.fields = []
         self.fieldName = ""
         self.state = self.PREGAME
-        self.stateTextSplit = False
         self.botGame = False
         self.buttons = {}
         self.buttonLayout = []
@@ -177,6 +176,10 @@ class UI:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.clicked = True
+                    self.needRedraw = True
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.needRedraw = True
 
                 if event.type == pygame.MOUSEMOTION:
                     f = self.getField(pygame.mouse.get_pos())
@@ -200,22 +203,21 @@ class UI:
                     self.stateText = self.game.specialText
                 except:
                     print(self.game.players[self.game.activePlayer].position)
-                self.stateTextSplit = True
                 if self.clicked == True:
                     self.runButtons()
                     self.needRedraw = True
-                    self.stateTextSplit = False
+                    self.stateText = ""
 
             elif self.game.state == self.game.WAITINGFORPURCHASE:
                 self.setButtons({0: ("Zapisz się", "Buy"), 1: ("Nie zapisuj się", "Yes")})
-                self.stateText = "Czy chcesz zapisać się na ten przedmiot?"
+                self.stateText = "Czy chcesz zapisać się na ten przedmiot? (Koszt: " + str(self.game.fields[self.game.players[self.game.activePlayer].position].getPurchaseCost()) + " ECTS)"
                 if self.clicked == True:
                     self.runButtons()
                     self.needRedraw = True
 
             elif self.game.state == self.game.WAITINGFORREPURCHASE:
                 self.setButtons({0: ("Podebranie", "Repurchase"), 1: ("Nie...", "Yes")})
-                self.stateText = "Czy chcesz podebrać ten przedmiot?"
+                self.stateText = "Czy chcesz podebrać ten przedmiot? (Koszt: " + str(self.game.fields[self.game.players[self.game.activePlayer].position].getRepurchaseCost()) + " ECTS)"
                 if self.clicked == True:
                     self.runButtons()
                     self.needRedraw = True
@@ -236,7 +238,7 @@ class UI:
 
             elif self.game.state == self.game.WAITINGFORTRAM:
                 self.setButtons({})
-                self.stateText = "Kliknij w przedmiot, na który chcesz się udać"
+                self.stateText = "Kliknij w pole, na który chcesz się udać"
                 if self.clicked == True:
                     f = self.getField(pygame.mouse.get_pos())
                     if f != -1:
@@ -349,7 +351,7 @@ class UI:
                 text = pygame.transform.smoothscale(text, (int(text.get_width() * scaleFactor), int(text.get_height() * scaleFactor)))
             self.surface.blit(text, (lay[0] + width / 2 - text.get_width() / 2, lay[1] + height / 2 - text.get_height() / 2))
 
-        if self.stateTextSplit:
+        if len(self.stateText) > 40:
             stateText = self.stateText.split()
             ret = []
             length = len(stateText)
@@ -371,7 +373,10 @@ class UI:
         off = 0
         for s in stateText:
             text = self.renderText(s)
-            scaleFactor = ((boardSize - 2 * cornerSize) - 40) / text.get_width()
+            try:
+                scaleFactor = ((boardSize - 2 * cornerSize) - 40) / text.get_width()
+            except:
+                scaleFactor = 1
             if scaleFactor < 1:
                 text = pygame.transform.smoothscale(text, (int(text.get_width() * scaleFactor), int(text.get_height() * scaleFactor)))
             x = marginHorizontal + cornerSize + (boardSize - 2 * cornerSize) / 2 - text.get_width() / 2
@@ -952,3 +957,4 @@ class UI:
                     button[1]()
                 else:
                     self.game.inputDecision(button[1])
+        self.needRedraw = True
