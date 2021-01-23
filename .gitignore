@@ -131,9 +131,11 @@ dmypy.json
 
 # VSCode
 .vscode/
-<<<<<<< Updated upstream
 
 # pycharm
 .idea/
-=======
->>>>>>> Stashed changes
+
+#logs
+log.out
+
+res/table.png

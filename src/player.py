@@ -20,6 +20,9 @@ class Player:
         self.jailed = 0
         self.position = 0
         self.ownedFields = []
+        self.total_jailed = 0
+        
+        self.bankrupt = False
 
         self.riskLevel = random.random()
         self.aggressionLevel = random.random()
@@ -58,7 +61,7 @@ class Player:
 
     #True - wykupuje się
     # False - rzuca dalej kośćmi        
-    def botDecideJail(self, field):
+    def botDecideJail(self):
         aggression = self.aggressionLevel
         ownedMoney = self.money
 
