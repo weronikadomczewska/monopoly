@@ -316,7 +316,7 @@ class Game:
             self.state = self.KONIECGRY
             for gracz in self.players:
                 if gracz.bankrupt == False:
-                    self.winner = self.players[self.activePlayer]
+                    self.winner = gracz
             return False
         else:
             self.zmiana_aktywnego_gracza()
@@ -343,6 +343,7 @@ class Game:
 
             if self.fields[p.position].isSpecial == True:
                 self.fields[p.position].specialFunction(p)
+                self.czy_wszyscy_gracze_jeszcze_graja()
                 self.zmiana_aktywnego_gracza()
             # nie zajęte pole
             elif self.fields[p.position].owner == None:
