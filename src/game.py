@@ -35,21 +35,25 @@ class Game:
     #obsługa pola startowego
     def startField(self, player):
         player.money += 30
+        self.specialText = 'Skończyłeś semestr, dostajesz punkty!'
 
     #akcja na polu duży grzyb
     def bigMushroom(self, player):
         player.money -= 30
+        self.specialText = 'Nie umiałeś NIC, duży grzyb dla ciebie!'
 
     #TODO
     #akcja na polu szansa
     def chanceField(self, player):
         card = choice(self.cards)
         self.card_effect(player, card[-2], card[-1])
+        self.specialText = card[0]
         return card[0]
 
     #akcja na polu więzienie
     def prisonField(self, player):
         player.jailed = 2
+        self.specialText = "Z wrażenia popsuł ci się komputer..."
         player.total_jailed += 1
     
     #TODO
@@ -59,9 +63,11 @@ class Game:
             player.money -= 45
             self.fields[player.position].owner=player
             player.ownedFields.append(self.fields[player.position])
+            self.specialText = "Zostajesz zapisany na praktyki!"
         else:
             player.money -= 30
             self.fields[player.position].owner.money += 30
+            self.specialText = "Praktyki są już zajęte, tracisz punkty"
 
     #akcja na polu tramwaj
     def tramField(self, player):
@@ -72,7 +78,7 @@ class Game:
     def tram(self,position):
         if self.fields[position].owner!= self.players[self.activePlayer] and self.fields[position].owner!= None:
             self.state = self.WAITINGFORTRAM
-            return 'Pole innego gracza. Nie można wejść na to pole!'
+            self.specialText = 'Pole innego gracza. Nie można wejść na to pole!'
         else:
             self.go_to_field(position)
 
@@ -82,10 +88,12 @@ class Game:
         player.position = 9
         player.jailed = 3
         player.total_jailed += 1
+        self.specialText = 'Psujesz swój komputer, musisz go naprawić!'
 
     #akcja na polu mały grzyb
     def littleMushroom(self, player):
         player.money -= 15
+        self.specialText = 'Nie rozwiązałeś zadania, dostajesz grzyba'
 
     # self.players[self.activePlayer]
     def initializeFields(self):
@@ -310,6 +318,8 @@ class Game:
                 if gracz.bankrupt == False:
                     self.winner = self.players[self.activePlayer]
             return False
+        else:
+            self.zmiana_aktywnego_gracza()
 
 
 
