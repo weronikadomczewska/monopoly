@@ -12,17 +12,9 @@ Python 3.x
 ```sh
 sudo apt install python3 python3-pip
 pip3 install matplotlib pygame
-./ start.sh
-```
-
-### Windows
-
-```sh
-py -m pip install -U pygame --user
-python -m pip install -U matplotlib
-start_win.bat
+./start.sh
 ```
 
 
 # Obsługa
-Gra obsługiwana jest za pomocą myszy.
+Gra obsługiwana jest za pomocą myszy, zgodnie z poleceniami na ekranie.
