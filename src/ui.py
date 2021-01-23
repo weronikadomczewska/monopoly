@@ -75,15 +75,15 @@ class UI:
                     self.needRedraw = True
 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_0:
+                    if event.key == pygame.K_0 or event.key == pygame.K_KP_0:
                         players = 0
-                    elif event.key == pygame.K_1:
+                    elif event.key == pygame.K_1 or event.key == pygame.K_KP_1:
                         players = 1
-                    elif event.key == pygame.K_2:
+                    elif event.key == pygame.K_2 or event.key == pygame.K_KP_2:
                         players = 2
-                    elif event.key == pygame.K_3:
+                    elif event.key == pygame.K_3 or event.key == pygame.K_KP_3:
                         players = 3
-                    elif event.key == pygame.K_4:
+                    elif event.key == pygame.K_4 or event.key == pygame.K_KP_4:
                         players = 4
 
             if self.needRedraw:
@@ -248,7 +248,7 @@ class UI:
                 self.setButtons({0: ("OK", self.endGame)})
                 self.stateText = "Koniec gry! Wygrywa " + ["Czerwony!", "Zielony!", "Niebieski!", "Żółty!"][self.game.players.index(self.game.winner)]
                 if self.clicked == True:
-                    
+                    self.runButtons()
                     self.needRedraw = True
                     return
 
@@ -820,6 +820,7 @@ class UI:
             txt = ""
             if p.isBot:
                 txt += "(B)"
+            txt += str(p.money if not p.bankrupt else 0)
             txt += " ECTS"
             if p.jailed > 0 and not p.bankrupt:
                 txt += " (#)"
@@ -828,7 +829,7 @@ class UI:
             color = (0, 0, 0)
             if p.bankrupt:
                 color = (128, 128, 128)
-            text = self.renderText(str(p.money if not p.bankrupt else 0) + txt, bold=(self.game.activePlayer == i), size=24, color=color)
+            text = self.renderText(txt, bold=(self.game.activePlayer == i), size=24, color=color)
             self.surface.blit(text, (x + 32, y))
 
             y += 26
