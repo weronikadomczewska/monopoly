@@ -71,14 +71,23 @@ class Game:
 
     #akcja na polu tramwaj
     def tramField(self, player):
-        self.state = self.WAITINGFORTRAM
+        if player.isBot==True:
+            pole=9
+            while(pole==9 or pole==27):
+                pole=randint(0,35)
+            self.tram(pole)
+        else:
+            self.state = self.WAITINGFORTRAM
         return False
 
     #akcja tramwaju
     def tram(self,position):
         if self.fields[position].owner!= self.players[self.activePlayer] and self.fields[position].owner!= None:
-            self.state = self.WAITINGFORTRAM
-            self.specialText = 'Pole innego gracza. Nie można wejść na to pole!'
+            if self.players[self.activePlayer].isBot==True:
+                self.tramField(self.players[self.activePlayer])
+            else:
+                self.state = self.WAITINGFORTRAM
+                self.specialText = 'Pole innego gracza. Nie można wejść na to pole!'
         else:
             self.go_to_field(position)
 
@@ -282,7 +291,7 @@ class Game:
         for pole in self.players[self.activePlayer].ownedFields:
             if pole.upgradeLevel==3:
                 z+=1
-        if z>=6:
+        if z>=4:
             self.state = self.KONIECGRY
             self.winner=self.players[self.activePlayer]
             return False
@@ -303,7 +312,6 @@ class Game:
     def bankrut(self,player):
         player.bankrupt= True
         player.money = 0
-        player.total_jailed=0
         z=0
         for gracz in self.players:
             if gracz.bankrupt == True:
