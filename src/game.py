@@ -373,6 +373,7 @@ class Game:
                     if (dec == True):
                         p.money -= self.fields[p.position].getRepurchaseCost()
                         owner = self.fields[p.position].owner
+                        owner.money += self.fields[p.position].getRepurchaseCost()
                         self.fields[p.position].upgradeLevel = 0
                         self.fields[p.position].owner = p
                         owner.ownedFields.remove(self.fields[p.position])
@@ -579,6 +580,7 @@ class Game:
         elif decision == 'Repurchase':
             p.money -= self.fields[p.position].getRepurchaseCost()
             owner = self.fields[p.position].owner
+            owner.money+=self.fields[p.position].getRepurchaseCost()
             self.fields[p.position].upgradeLevel = 0
             self.fields[p.position].owner = p
             owner.ownedFields.remove(self.fields[p.position])
