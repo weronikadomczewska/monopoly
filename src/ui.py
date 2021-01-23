@@ -231,7 +231,7 @@ class UI:
 
             elif self.game.state == self.game.WAITINGFORJAIL:
                 self.setButtons({0: ("Napraw", "Bribe"), 1: ("Licz na cud...", "Yes")})
-                self.stateText = "Czy chcesz naprawić swój komputer?"
+                self.stateText = "Czy chcesz naprawić swój komputer? (Koszt: 30 ECTS)"
                 if self.clicked == True:
                     self.runButtons()
                     self.needRedraw = True
@@ -380,7 +380,7 @@ class UI:
             if scaleFactor < 1:
                 text = pygame.transform.smoothscale(text, (int(text.get_width() * scaleFactor), int(text.get_height() * scaleFactor)))
             x = marginHorizontal + cornerSize + (boardSize - 2 * cornerSize) / 2 - text.get_width() / 2
-            y = off + marginVertical + (3 * boardSize / 4) - cornerSize
+            y = off + marginVertical + (boardSize / 2) - cornerSize
             self.surface.blit(text, (x, y))
             off += text.get_height() + 4
 
