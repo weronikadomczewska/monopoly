@@ -83,7 +83,7 @@ class Game:
 
     #akcja tramwaju
     def tram(self,position):
-        if self.fields[position].owner!= self.players[self.activePlayer] and self.fields[position].owner!= None:
+        if ((self.fields[position].owner!= self.players[self.activePlayer] and self.fields[position].owner!= None) or position==18):
             if self.players[self.activePlayer].isBot==True:
                 self.tramField(self.players[self.activePlayer])
             else:
@@ -265,13 +265,15 @@ class Game:
         if z>=4:
             self.state = self.KONIECGRY
             self.winner=self.players[self.activePlayer]
-            return False
+            return True
+        return False
 
 
 
         # kliknięcie dla rzutu kością
     def zmiana_aktywnego_gracza(self):
-        self.doktorat()
+        if self.doktorat()==True:
+            return True
         self.activePlayer +=1
         self.activePlayer %=len(self.players)
         while self.players[self.activePlayer].bankrupt==True:
@@ -437,6 +439,12 @@ class Game:
                                 str(p.position))
 #--------------------------------------------------------------------------------------------------------------------------------
     def inputDice(self):
+        if self.bankrutPlayers==3:
+            self.state = self.KONIECGRY
+            for gracz in self.players:
+                if gracz.bankrupt == False:
+                    self.winner = gracz
+            return False
         # rzut kością,
         p=self.players[self.activePlayer]
         if p.isBot == True:
