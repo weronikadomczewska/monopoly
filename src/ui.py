@@ -18,7 +18,10 @@ class UI:
         self.fields = []
         self.fieldName = ""
         self.state = self.PREGAME
+        self.stateTextSplit = False
         self.botGame = False
+        self.buttons = {}
+        self.buttonLayout = []
 
         pygame.display.init()
         info = pygame.display.Info()
@@ -185,49 +188,67 @@ class UI:
 
             # obsługa stanów gry
             if self.game.state == self.game.WAITINGFORDICE:
+                self.setButtons({0: ("Rzuć kostką", self.rollDice)})
+                self.stateText = "Kliknij w przycisk, aby rzucić kością"
                 if self.clicked == True:
-                    self.drawDice = self.game.inputDice()
+                    self.runButtons()
                     self.needRedraw = True
 
             elif self.game.state == self.game.WAITINGFORDECISION:
+                self.setButtons({0: ("Potwierdź", "Yes")})
+                try:
+                    self.stateText = self.game.specialText
+                except:
+                    print(self.game.players[self.game.activePlayer].position)
+                self.stateTextSplit = True
                 if self.clicked == True:
-                    self.game.inputDecision("Yes")
+                    self.runButtons()
                     self.needRedraw = True
+                    self.stateTextSplit = False
 
             elif self.game.state == self.game.WAITINGFORPURCHASE:
+                self.setButtons({0: ("Zapisz się", "Buy"), 1: ("Nie zapisuj się", "Yes")})
+                self.stateText = "Czy chcesz zapisać się na ten przedmiot?"
                 if self.clicked == True:
-                    self.game.inputDecision("Buy")
+                    self.runButtons()
                     self.needRedraw = True
 
             elif self.game.state == self.game.WAITINGFORREPURCHASE:
+                self.setButtons({0: ("Podebranie", "Repurchase"), 1: ("Nie...", "Yes")})
+                self.stateText = "Czy chcesz podebrać ten przedmiot?"
                 if self.clicked == True:
-                    self.game.inputDecision("Repurchase")
+                    self.runButtons()
                     self.needRedraw = True
 
             elif self.game.state == self.game.WAITINGFORUPGRADE:
+                self.setButtons({0: ("Napisz", "Upgrade"), 1: ("Nie pisz", "Yes")})
+                self.stateText = "Czy chcesz napisać pracę?"
                 if self.clicked == True:
-                    self.game.inputDecision("Upgrade")
+                    self.runButtons()
                     self.needRedraw = True
 
             elif self.game.state == self.game.WAITINGFORJAIL:
+                self.setButtons({0: ("Napraw", "Bribe"), 1: ("Licz na cud...", "Yes")})
+                self.stateText = "Czy chcesz naprawić swój komputer?"
                 if self.clicked == True:
-                    self.game.inputDecision("Bribe")
+                    self.runButtons()
                     self.needRedraw = True
 
             elif self.game.state == self.game.WAITINGFORTRAM:
+                self.setButtons({})
+                self.stateText = "Kliknij w przedmiot, na który chcesz się udać"
                 if self.clicked == True:
                     f = self.getField(pygame.mouse.get_pos())
                     if f != -1:
                         self.game.tram(f)
-                    else:
-                        pass # TODO: klikaj w pole!
                     self.needRedraw = True
 
             # self.winner przechowuje wygranego
             elif self.game.state == self.game.KONIECGRY:
+                self.setButtons({0: ("OK", self.endGame)})
+                self.stateText = "Koniec gry! Wygrywa " + ["Czerwony!", "Zielony!", "Niebieski!", "Żółty!"][self.game.players.index(self.game.winner)]
                 if self.clicked == True:
-                    self.game.game_over()
-                    self.state = self.POSTGAME
+                    
                     self.needRedraw = True
                     return
 
@@ -313,6 +334,40 @@ class UI:
 
         # rysowanie informacji o graczach 
         self.drawPlayerInfo(marginHorizontal + cornerSize + 5, marginVertical + cornerSize + 5, (boardSize - 2 * cornerSize) / 2)
+
+        # rysowanie guzików i tekstu
+        for i in self.buttons:
+            buttonText, _ = self.buttons[i]
+            lay = self.buttonLayout[i]
+            width = lay[2] - lay[0]
+            height = lay[3] - lay[1]
+            rect = pygame.Rect(lay[0], lay[1], width, height)
+            pygame.draw.rect(self.surface, (0, 0, 0), rect, 2)
+            text = self.renderText(buttonText)
+            scaleFactor = (width - 20) / text.get_width()
+            if scaleFactor < 1:
+                text = pygame.transform.smoothscale(text, (int(text.get_width() * scaleFactor), int(text.get_height() * scaleFactor)))
+            self.surface.blit(text, (lay[0] + width / 2 - text.get_width() / 2, lay[1] + height / 2 - text.get_height() / 2))
+
+        if self.stateTextSplit:
+            length = len(self.stateText)
+            pos = length // 2
+            while self.stateText[pos] != ' ':
+                pos += 1
+            stateText = [self.stateText[:pos], self.stateText[pos + 1:]]
+        else:
+            stateText = [self.stateText]
+
+        off = 0
+        for s in stateText:
+            text = self.renderText(s)
+            scaleFactor = ((boardSize - 2 * cornerSize) - 40) / text.get_width()
+            if scaleFactor < 1:
+                text = pygame.transform.smoothscale(text, (int(text.get_width() * scaleFactor), int(text.get_height() * scaleFactor)))
+            x = marginHorizontal + cornerSize + (boardSize - 2 * cornerSize) / 2 - text.get_width() / 2
+            y = off + marginVertical + (3 * boardSize / 4) - cornerSize
+            self.surface.blit(text, (x, y))
+            off += text.get_height() + 4
 
         # rysowanie kostek po rzucie
         if self.drawDice:
@@ -813,4 +868,44 @@ class UI:
         text = self.renderText("Reszta graczy będzie botami", size=32)
         x = surfSize[0] / 2 - text.get_width() / 2
         self.surface.blit(text, (x, y))
-        
+
+    def layoutButtons(self):
+        if self.buttons == None or len(self.buttons) == 0:
+            return
+
+        self.buttonLayout = [None] * len(self.buttons)
+        w = self.surface.get_width() # szerokość okna
+        h = self.surface.get_height() # wysokość okna
+        boardSize = min(w, h) - (min(w, h) / 8) # długość boku planszy
+        fieldWidth = (boardSize / 11) # "szerokość" pola
+        cornerSize = fieldWidth * 1.5 # rozmiar pola narożnego
+        marginHorizontal = (w - boardSize) / 2 # margines poziomy
+
+        buttonSize = ((boardSize - (2 * cornerSize) - 20) - (10 * (len(self.buttons) - 1))) / len(self.buttons)
+        x = marginHorizontal + cornerSize + 10
+        y = boardSize - cornerSize
+
+        for i in self.buttons:
+            self.buttonLayout[i] = (x, y, x + buttonSize, y + 40)
+            x += buttonSize
+            x += 10
+
+    def setButtons(self, buttons):
+        self.buttons = buttons
+        self.layoutButtons()
+
+    def rollDice(self):
+        self.drawDice = self.game.inputDice()
+
+    def endGame(self):
+        self.game.game_over()
+        self.state = self.POSTGAME
+
+    def runButtons(self):
+        for i in range(len(self.buttonLayout)):
+            button = self.buttons[i]
+            if self.detectClick(pygame.mouse.get_pos(), self.buttonLayout[i]):
+                if callable(button[1]):
+                    button[1]()
+                else:
+                    self.game.inputDecision(button[1])
