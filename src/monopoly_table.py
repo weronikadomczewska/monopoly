@@ -52,7 +52,7 @@ def statistics(data):
     fig, ax = plt.subplots(figsize=(12, 5)) 
     ax.set_axis_off()
 
-    columns = ("ECTS'y", "zaliczone przedmioty", "naprawy komputera", "ranga")
+    columns = ("ECTS'y", "wartość zaliczonych przedmiotów", "naprawy komputera", "ranga")
     rows = ["Gracz " + str(i+1) for i in range(len(data))]
     # print(rows)
 
