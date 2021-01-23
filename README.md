@@ -20,6 +20,7 @@ pip3 install matplotlib pygame
 ```sh
 py -m pip install -U pygame --user
 python -m pip install -U matplotlib
+start_win.bat
 ```
 
 
