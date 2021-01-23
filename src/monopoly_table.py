@@ -1,10 +1,5 @@
 import matplotlib.pyplot as plt
 import random
-import subprocess
-import os
-
-#TODO: dopisz do readme konieczność zainstalowania numpy
-#TODO: ustaw kolory wierszy tak, aby zgadzały się z kolorami pionków graczy
 
 #statystyki każdego gracza od 0 do 3 w kolejności posiadane pieniądze, posiadłości, pobyty w więzieniu
 #w przypadku bankruta wszystkie statystyki sa zerowane
@@ -66,7 +61,7 @@ def statistics(data):
         rowColours=player_colors,  
         colColours=["lightblue"]* len(columns), 
         cellLoc='center',
-        colWidths=[0.25, 0.25, 0.25, 0.25], 
+        colWidths=[0.25, 0.3, 0.25, 0.25], 
         loc='upper left',
         
     )
@@ -83,14 +78,14 @@ def statistics(data):
 
 
 #test
-# data = [
+data = [
 
-#     ['255', '18', '10'],
-#     ['10', '0', '15'],
-#     ['0', '0', '0'],
-#     ['100', '15', '23']
+    ['255', '18', '10'],
+    ['10', '0', '15'],
+    ['0', '0', '0'],
+    ['100', '15', '23']
 
-# ]
+]
 
-# statistics(data)
+statistics(data)
 
