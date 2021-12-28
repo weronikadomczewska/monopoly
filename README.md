@@ -1,5 +1,5 @@
-# Monopoly UWr
-Projekt na PWI - gra typu Monopoly dla 4 graczy
+# Monopoly
+Projekt - gra typu Monopoly dla 4 graczy
 
 <img src ='man/board_small.png'>
 
